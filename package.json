@@ -1,0 +1,23 @@
+{
+    "name": "tree-sitter-exa",
+    "version": "1.0.0",
+    "description": "Tree-sitter grammar for the EXA programming language from Zachtronics' EXAPUNKS.",
+    "license": "MIT",
+    "keywords": [
+        "tree-sitter",
+        "parser",
+        "exa",
+        "exapunks",
+        "zachtronics"
+    ],
+    "main": "bindings/node",
+    "dependencies": {
+        "nan": "^2.15.0"
+    },
+    "devDependencies": {
+        "tree-sitter-cli": "^0.20.0"
+    },
+    "scripts": {
+        "build": "tree-sitter generate && node-gyp build"
+    }
+}
