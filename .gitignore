@@ -3,7 +3,7 @@ bindings/node
 binding.gyp
 
 # Build artifacts
-build/
+target/
 
 # Logs
 logs
