@@ -1,6 +1,6 @@
 # Unused `tree-sitter-cli generate` artifacts
-bindings/rust
-Cargo.toml
+bindings/node
+binding.gyp
 
 # Build artifacts
 build/
