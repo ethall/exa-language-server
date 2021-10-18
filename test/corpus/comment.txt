@@ -1,0 +1,100 @@
+=======
+comment
+=======
+
+;
+; f
+; #nerv
+; 681
+; FOO_BAR_BAZ
+; EOF
+; mrd
+; t X
+; F #dial
+; m 0828
+; T foo
+; #nerv x
+; #Data #Page
+; #nerv 1256
+; #data BAR
+; -729 f
+; -78 #Page
+; +576 -487
+; -2046 FOO_BAR_BAZ
+; Bar M
+; ZorkGork_Bork #Dial
+; baz +81
+; Foo_bar FOO
+NOTE
+Note x
+note #nerv
+NOtE +122
+NotE BAR
+NoTe eof
+NOtE MRD
+nOTE T M
+Note f #Data
+NoTE f 130
+notE x baz
+notE #PAGE m
+nOte #DIAL #nerv
+Note #DIAL +2
+nOte #data Foo_Bar_Baz
+notE 18 t
+note +1539 #PAGE
+nOTE +0489 +1300
+notE +291 zorkgork_bork
+nOTe Foo t
+nOTE foo_bar #Page
+NOTE foo_bar -1041
+noTE Baz Bar
+
+---
+
+(exa
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment)
+    (comment))

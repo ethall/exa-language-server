@@ -19,11 +19,6 @@
     }
   },
   {
-    "type": "comment",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "copy",
     "named": true,
     "fields": {},
@@ -519,11 +514,11 @@
     }
   },
   {
-    "type": ";",
-    "named": false
+    "type": "binary_operator",
+    "named": true
   },
   {
-    "type": "binary_operator",
+    "type": "comment",
     "named": true
   },
   {

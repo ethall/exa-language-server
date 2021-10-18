@@ -267,10 +267,7 @@ class Rule:
         for subrule in words:
             self.params.append(Param.parse(subrule))
 
-        if name == ";" or name == "NOTE":
-            self.name = "comment"
-        else:
-            self.name = name.lower()
+        self.name = name.lower()
 
     def as_tests(self) -> str:
         variations: list[str] = []
@@ -278,7 +275,11 @@ class Rule:
             parameters = ""
             for param in permutations.params:
                 parameters += " " + param[0].value
-            name = apply_case_style(self.name, next(CASE_STYLE))
+            name = (
+                self.name
+                if self.name == ";"
+                else apply_case_style(self.name, next(CASE_STYLE))
+            )
             variations.append(name + parameters)
         return "\n".join(variations)
 
@@ -289,7 +290,11 @@ class Rule:
                 param[0].as_tree() for param in permutations.params
             ]
             separator = " " if len(parameters) > 0 else ""
-            variations.append(f"({self.name}{separator}" + " ".join(parameters) + ")")
+            if Rule.comment(self.name):
+                variations.append("(comment)")
+            else:
+                joined_params = " ".join(parameters)
+                variations.append(f"({self.name}{separator}{joined_params})")
         return " ".join(variations)
 
     def parameter_permutations(self) -> list["Rule"]:
@@ -302,6 +307,10 @@ class Rule:
                 rule.params = [[Param(p.type)] for p in variant]
                 self._permutation_cache.append(rule)
         return self._permutation_cache
+
+    @staticmethod
+    def comment(word: str) -> bool:
+        return word == ";" or word.lower() == "note"
 
 
 class Root:
@@ -335,14 +344,14 @@ class TreeSitterTest:
 
     def __init__(self, name: str, root: Root, indent: str = "    ") -> None:
         self.indent = indent
-        self.name = name
+        self.name = name if not Rule.comment(name) else "comment"
         self.root = root
 
     def __str__(self) -> str:
         content: list[str] = [
-            "====",
+            "=" * len(self.name),
             self.name,
-            "====",
+            "=" * len(self.name),
             "",
             self.root.as_tests(),
             "",
@@ -410,7 +419,14 @@ if __name__ == "__main__":
         ["tjmp label"] * 3,
         ["void f|m"] * 3,
         ["wipe"] * 3,
-        # # TODO comment is broken
+        [
+            ";",
+            "; register|hardware|number|label|eof|mrd",
+            "; register|hardware|number|label register|hardware|number|label",
+            "note",
+            "note register|hardware|number|label|eof|mrd",
+            "note register|hardware|number|label register|hardware|number|label",
+        ],
     ]
 
     tests: list[TreeSitterTest] = []

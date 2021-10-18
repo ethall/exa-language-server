@@ -190,12 +190,6 @@ module.exports = grammar({
 
         /* MISCELLANEOUS */
 
-        // note + semicolon comment
-        comment: $ => choice(
-            seq(/[nN][oO][tT][eE]/, /.*/),
-            seq(';', /.*/)
-        ),
-
         noop: $ => /[nN][oO]{2}[pP]/,
 
         rand: $ => seq(
@@ -249,5 +243,10 @@ module.exports = grammar({
 
             return token(integer_literal)
         },
+
+        // note + semicolon comment
+        comment: $ => token(
+            seq(choice(/[nN][oO][tT][eE]/, ';'), /.*/)
+        )
     }
 })

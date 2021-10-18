@@ -661,37 +661,6 @@
       "type": "PATTERN",
       "value": "[wW][iI][pP][eE]"
     },
-    "comment": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "PATTERN",
-              "value": "[nN][oO][tT][eE]"
-            },
-            {
-              "type": "PATTERN",
-              "value": ".*"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": ";"
-            },
-            {
-              "type": "PATTERN",
-              "value": ".*"
-            }
-          ]
-        }
-      ]
-    },
     "noop": {
       "type": "PATTERN",
       "value": "[nN][oO]{2}[pP]"
@@ -875,6 +844,31 @@
           {
             "type": "PATTERN",
             "value": "[0-9]{1,4}"
+          }
+        ]
+      }
+    },
+    "comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[nN][oO][tT][eE]"
+              },
+              {
+                "type": "STRING",
+                "value": ";"
+              }
+            ]
+          },
+          {
+            "type": "PATTERN",
+            "value": ".*"
           }
         ]
       }
