@@ -2,9 +2,9 @@
 mark
 ====
 
-mark FOO_BAR
-mark FOO
-mark baz
+MARK baz
+Mark Foo_Bar_Baz
+mark foo
 
 ---
 

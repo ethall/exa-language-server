@@ -2,137 +2,137 @@
 muli
 ====
 
-muli M f X
-muli t M #Page
-muli m #Nerv T
-muli F #dial #data
-muli x -138 m
-muli T -23 #Page
-muli #Dial X f
-muli #Nerv F #Page
-muli #data #DIAL t
-muli #DATA #Page #NERV
-muli #Data -72 x
-muli #Dial -785 #Nerv
-muli +524 M T
-muli -456 f #Page
-muli -280 #DATA M
-muli 198 #PAGE #nerv
-muli +561 +516 X
-muli -734 -293 #dial
+MULI T f x
+Muli M x #dial
+muli F #page m
+MuLI T #NERV #Data
+mULi m -625 f
+MuLI x -156 #PAGE
+muli #nerv T X
+muLI #Dial f #Data
+MULI #Nerv #Dial T
+MULI #data #page #Nerv
+mUli #DIAL -649 M
+Muli #data -51 #page
+MUlI 36 x f
+mULi -72 M #DIAL
+muLi +304 #NERV T
+mULI -0081 #Data #Page
+MULI -0591 -1452 M
+mULi -82 +772 #Dial
 
 ---
 
 (exa
     (muli
         (register
-            (m))
+            (t))
         (register
             (f))
         (register
             (x)))
     (muli
         (register
-            (t))
-        (register
             (m))
+        (register
+            (x))
         (register
             (hardware)))
-    (muli
-        (register
-            (m))
-        (register
-            (hardware))
-        (register
-            (t)))
     (muli
         (register
             (f))
         (register
             (hardware))
         (register
-            (hardware)))
-    (muli
-        (register
-            (x))
-        (number)
-        (register
             (m)))
     (muli
         (register
             (t))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (muli
+        (register
+            (m))
+        (number)
+        (register
+            (f)))
+    (muli
+        (register
+            (x))
         (number)
         (register
             (hardware)))
     (muli
         (register
             (hardware))
+        (register
+            (t))
+        (register
+            (x)))
+    (muli
+        (register
+            (hardware))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (muli
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (t)))
+    (muli
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (muli
+        (register
+            (hardware))
+        (number)
+        (register
+            (m)))
+    (muli
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (muli
+        (number)
         (register
             (x))
         (register
             (f)))
     (muli
-        (register
-            (hardware))
-        (register
-            (f))
-        (register
-            (hardware)))
-    (muli
-        (register
-            (hardware))
-        (register
-            (hardware))
-        (register
-            (t)))
-    (muli
-        (register
-            (hardware))
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (muli
-        (register
-            (hardware))
-        (number)
-        (register
-            (x)))
-    (muli
-        (register
-            (hardware))
-        (number)
-        (register
-            (hardware)))
-    (muli
         (number)
         (register
             (m))
         (register
+            (hardware)))
+    (muli
+        (number)
+        (register
+            (hardware))
+        (register
             (t)))
     (muli
         (number)
         (register
-            (f))
+            (hardware))
         (register
             (hardware)))
     (muli
         (number)
-        (register
-            (hardware))
+        (number)
         (register
             (m)))
-    (muli
-        (number)
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (muli
-        (number)
-        (number)
-        (register
-            (x)))
     (muli
         (number)
         (number)

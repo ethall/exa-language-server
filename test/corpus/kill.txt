@@ -9,6 +9,6 @@ kill
 ---
 
 (exa
-  (kill)
-  (kill)
-  (kill))
+    (kill)
+    (kill)
+    (kill))

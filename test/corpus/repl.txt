@@ -2,9 +2,9 @@
 repl
 ====
 
-repl ZorkGork_Bork
-repl Foo
-repl Foo_bar
+REPL bar
+Repl Foo_bar
+repl ZORKGORK_BORK
 
 ---
 

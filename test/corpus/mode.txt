@@ -9,6 +9,6 @@ mode
 ---
 
 (exa
-  (mode)
-  (mode)
-  (mode))
+    (mode)
+    (mode)
+    (mode))

@@ -2,9 +2,9 @@
 tjmp
 ====
 
-tjmp Foo
-tjmp Foo_Bar_Baz
-tjmp baz
+TJMP foo_bar
+Tjmp BAR
+tjmp ZorkGork_Bork
 
 ---
 

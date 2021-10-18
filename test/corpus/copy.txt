@@ -2,24 +2,24 @@
 copy
 ====
 
-copy m X
-copy T #Data
-copy #Nerv f
-copy #DIAL #Page
-copy -891 F
-copy 0518 #Dial
+COPY x t
+Copy m #page
+copy #data f
+COpy #Dial #nerv
+coPY 207 M
+cOPY -135 #PAGE
 
 ---
 
 (exa
     (copy
         (register
-            (m))
+            (x))
         (register
-            (x)))
+            (t)))
     (copy
         (register
-            (t))
+            (m))
         (register
             (hardware)))
     (copy
@@ -35,7 +35,7 @@ copy 0518 #Dial
     (copy
         (number)
         (register
-            (f)))
+            (m)))
     (copy
         (number)
         (register

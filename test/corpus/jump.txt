@@ -2,9 +2,9 @@
 jump
 ====
 
-jump ZorkGork_Bork
-jump FOO_BAR_BAZ
-jump bar
+JUMP Baz
+Jump ZorkGork_Bork
+jump foo_bar_baz
 
 ---
 

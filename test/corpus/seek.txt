@@ -2,16 +2,16 @@
 seek
 ====
 
-seek f
-seek #NERV
-seek +4
+SEEK m
+Seek #dial
+seek +823
 
 ---
 
 (exa
     (seek
         (register
-            (f)))
+            (m)))
     (seek
         (register
             (hardware)))

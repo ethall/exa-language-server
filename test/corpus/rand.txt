@@ -2,137 +2,137 @@
 rand
 ====
 
-rand m x m
-rand t f #dial
-rand x #page X
-rand m #nerv #PAGE
-rand T -745 f
-rand M -45 #data
-rand #dial x T
-rand #Nerv F #data
-rand #Page #dial f
-rand #DIAL #DATA #PAGE
-rand #Nerv +0783 m
-rand #Dial -296 #PAGE
-rand +605 x t
-rand +645 T #nerv
-rand -629 #data F
-rand +1677 #nerv #DATA
-rand 1485 304 m
-rand -1300 -342 #Page
+RAND X F T
+Rand M f #Nerv
+rand t #data X
+RAnd x #page #Nerv
+raNd m -356 F
+raND T -0786 #page
+ranD #dial f T
+RAND #DATA X #Page
+RanD #nerv #Dial m
+ranD #data #nerv #dial
+raND #Page -1157 X
+rand #DATA +0018 #PAGE
+ranD +760 t M
+RANd +0803 F #DATA
+rANd -1246 #Dial T
+RaND +357 #nerv #Data
+RAND -358 +174 x
+raND -511 1292 #PAGE
 
 ---
 
 (exa
     (rand
         (register
-            (m))
-        (register
             (x))
         (register
-            (m)))
+            (f))
+        (register
+            (t)))
     (rand
         (register
-            (t))
+            (m))
         (register
             (f))
         (register
             (hardware)))
     (rand
         (register
-            (x))
+            (t))
         (register
             (hardware))
         (register
             (x)))
     (rand
         (register
-            (m))
+            (x))
         (register
             (hardware))
         (register
             (hardware)))
     (rand
         (register
-            (t))
+            (m))
         (number)
         (register
             (f)))
     (rand
         (register
-            (m))
+            (t))
         (number)
         (register
             (hardware)))
-    (rand
-        (register
-            (hardware))
-        (register
-            (x))
-        (register
-            (t)))
     (rand
         (register
             (hardware))
         (register
             (f))
         (register
+            (t)))
+    (rand
+        (register
+            (hardware))
+        (register
+            (x))
+        (register
             (hardware)))
     (rand
         (register
             (hardware))
         (register
             (hardware))
-        (register
-            (f)))
-    (rand
-        (register
-            (hardware))
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (rand
-        (register
-            (hardware))
-        (number)
         (register
             (m)))
     (rand
         (register
             (hardware))
-        (number)
+        (register
+            (hardware))
         (register
             (hardware)))
     (rand
+        (register
+            (hardware))
         (number)
         (register
-            (x))
+            (x)))
+    (rand
         (register
-            (t)))
+            (hardware))
+        (number)
+        (register
+            (hardware)))
     (rand
         (number)
         (register
             (t))
         (register
-            (hardware)))
-    (rand
-        (number)
-        (register
-            (hardware))
-        (register
-            (f)))
-    (rand
-        (number)
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (rand
-        (number)
-        (number)
-        (register
             (m)))
+    (rand
+        (number)
+        (register
+            (f))
+        (register
+            (hardware)))
+    (rand
+        (number)
+        (register
+            (hardware))
+        (register
+            (t)))
+    (rand
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (rand
+        (number)
+        (number)
+        (register
+            (x)))
     (rand
         (number)
         (number)

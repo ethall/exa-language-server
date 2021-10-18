@@ -9,6 +9,6 @@ make
 ---
 
 (exa
-  (make)
-  (make)
-  (make))
+    (make)
+    (make)
+    (make))

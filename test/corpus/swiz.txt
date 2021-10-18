@@ -2,24 +2,24 @@
 swiz
 ====
 
-swiz x M x
-swiz T F #Nerv
-swiz m #DATA m
-swiz T #data #Nerv
-swiz f 0128 x
-swiz F 21 #DIAL
-swiz #PAGE M X
-swiz #DIAL T #DATA
-swiz #Nerv #Page f
-swiz #Nerv #page #DATA
-swiz #Dial +205 t
-swiz #DIAL 467 #PAGE
-swiz 561 m X
-swiz -406 f #Nerv
-swiz -542 #data T
-swiz -1701 #DATA #Page
-swiz +43 -1393 X
-swiz -451 1435 #Nerv
+SWIZ X m F
+Swiz t x #Page
+swiz T #dial M
+SWiZ f #DATA #nerv
+sWIZ T 1483 m
+SWiz F -295 #nerv
+SwiZ #dial X t
+SWIz #Page m #data
+SWIz #page #dial f
+sWIz #DATA #nerv #data
+SwIz #Dial +644 x
+Swiz #Page 1331 #Nerv
+swiz +602 t X
+swiz -150 f #page
+swiz 153 #Dial m
+SwiZ 266 #DATA #NERV
+SWIZ -0998 565 X
+SwIz -436 653 #dial
 
 ---
 
@@ -30,52 +30,52 @@ swiz -451 1435 #Nerv
         (register
             (m))
         (register
-            (x)))
+            (f)))
     (swiz
         (register
             (t))
         (register
-            (f))
+            (x))
         (register
             (hardware)))
     (swiz
         (register
-            (m))
+            (t))
         (register
             (hardware))
         (register
             (m)))
     (swiz
         (register
-            (t))
+            (f))
         (register
             (hardware))
         (register
             (hardware)))
     (swiz
         (register
-            (f))
+            (t))
         (number)
         (register
-            (x)))
+            (m)))
     (swiz
         (register
             (f))
         (number)
         (register
             (hardware)))
+    (swiz
+        (register
+            (hardware))
+        (register
+            (x))
+        (register
+            (t)))
     (swiz
         (register
             (hardware))
         (register
             (m))
-        (register
-            (x)))
-    (swiz
-        (register
-            (hardware))
-        (register
-            (t))
         (register
             (hardware)))
     (swiz
@@ -97,7 +97,7 @@ swiz -451 1435 #Nerv
             (hardware))
         (number)
         (register
-            (t)))
+            (x)))
     (swiz
         (register
             (hardware))
@@ -107,7 +107,7 @@ swiz -451 1435 #Nerv
     (swiz
         (number)
         (register
-            (m))
+            (t))
         (register
             (x)))
     (swiz
@@ -121,7 +121,7 @@ swiz -451 1435 #Nerv
         (register
             (hardware))
         (register
-            (t)))
+            (m)))
     (swiz
         (number)
         (register

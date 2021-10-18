@@ -2,15 +2,15 @@
 file
 ====
 
-file T
-file #Data
+FILE M
+File #Page
 
 ---
 
 (exa
     (file
         (register
-            (t)))
+            (m)))
     (file
         (register
             (hardware))))

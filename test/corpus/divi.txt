@@ -2,115 +2,115 @@
 divi
 ====
 
-divi t F m
-divi X F #PAGE
-divi X #DATA T
-divi M #NERV #dial
-divi T 661 f
-divi X 0632 #DATA
-divi #Page M f
-divi #nerv t #dial
-divi #Dial #DATA X
-divi #page #Nerv #NERV
-divi #DATA -1542 m
-divi #Page -3138 #DIAL
-divi +244 F x
-divi -617 t #Data
-divi +19 #Page M
-divi 560 #Nerv #dial
-divi -822 1501 M
-divi 523 +524 #Page
+DIVI X T M
+Divi x t #Data
+divi f #DIAL F
+DIvI t #Page #DATA
+DIVI x 2248 M
+dIvI T +296 #Nerv
+diVI #DIAL M F
+DiVi #DATA X #page
+DiVi #Dial #Nerv M
+DiVI #data #NERV #DIAL
+dIVI #page -107 t
+dIVi #Page -1074 #data
+dIVI 623 X f
+divI 247 T #nerv
+divI -56 #dial f
+Divi 365 #DIAL #nerv
+DivI 1507 -1031 X
+diVI +447 -23 #DATA
 
 ---
 
 (exa
     (divi
         (register
-            (t))
+            (x))
         (register
-            (f))
+            (t))
         (register
             (m)))
     (divi
         (register
             (x))
         (register
+            (t))
+        (register
+            (hardware)))
+    (divi
+        (register
             (f))
+        (register
+            (hardware))
+        (register
+            (f)))
+    (divi
+        (register
+            (t))
+        (register
+            (hardware))
         (register
             (hardware)))
     (divi
         (register
             (x))
+        (number)
+        (register
+            (m)))
+    (divi
+        (register
+            (t))
+        (number)
+        (register
+            (hardware)))
+    (divi
         (register
             (hardware))
+        (register
+            (m))
+        (register
+            (f)))
+    (divi
+        (register
+            (hardware))
+        (register
+            (x))
+        (register
+            (hardware)))
+    (divi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (m)))
+    (divi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (divi
+        (register
+            (hardware))
+        (number)
         (register
             (t)))
     (divi
         (register
-            (m))
-        (register
             (hardware))
+        (number)
         (register
             (hardware)))
     (divi
-        (register
-            (t))
         (number)
-        (register
-            (f)))
-    (divi
         (register
             (x))
-        (number)
-        (register
-            (hardware)))
-    (divi
-        (register
-            (hardware))
-        (register
-            (m))
         (register
             (f)))
     (divi
-        (register
-            (hardware))
-        (register
-            (t))
-        (register
-            (hardware)))
-    (divi
-        (register
-            (hardware))
-        (register
-            (hardware))
-        (register
-            (x)))
-    (divi
-        (register
-            (hardware))
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (divi
-        (register
-            (hardware))
-        (number)
-        (register
-            (m)))
-    (divi
-        (register
-            (hardware))
-        (number)
-        (register
-            (hardware)))
-    (divi
-        (number)
-        (register
-            (f))
-        (register
-            (x)))
-    (divi
         (number)
         (register
             (t))
@@ -121,7 +121,7 @@ divi 523 +524 #Page
         (register
             (hardware))
         (register
-            (m)))
+            (f)))
     (divi
         (number)
         (register
@@ -132,7 +132,7 @@ divi 523 +524 #Page
         (number)
         (number)
         (register
-            (m)))
+            (x)))
     (divi
         (number)
         (number)

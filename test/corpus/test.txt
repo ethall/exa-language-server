@@ -2,21 +2,21 @@
 test
 ====
 
-test M > F
-test x = #DIAL
-test m < +0598
-test #Data = t
-test #PAGE < #DIAL
-test #nerv > -1491
-test +417 > F
-test 1367 = #nerv
-test -228 < -1137
-test EoF
-test eof
-test EOF
-test MRD
-test MRd
-test MRd
+TEST m > f
+Test T < #DATA
+test x = -190
+tEST #Page < t
+test #NERV = #DIAL
+tESt #PAGE > -1257
+tesT -90 < F
+teSt -602 = #Data
+teSt -693 > -967
+tesT EOF
+teSt EOF
+tEsT eof
+TesT mrd
+TesT mrd
+TEst MRD
 
 ---
 
@@ -29,13 +29,13 @@ test MRd
             (f)))
     (test
         (register
-            (x))
+            (t))
         (binary_operator)
         (register
             (hardware)))
     (test
         (register
-            (m))
+            (x))
         (binary_operator)
         (number))
     (test

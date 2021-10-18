@@ -9,6 +9,6 @@ drop
 ---
 
 (exa
-  (drop)
-  (drop)
-  (drop))
+    (drop)
+    (drop)
+    (drop))

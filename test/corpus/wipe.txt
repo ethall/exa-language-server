@@ -9,6 +9,6 @@ wipe
 ---
 
 (exa
-  (wipe)
-  (wipe)
-  (wipe))
+    (wipe)
+    (wipe)
+    (wipe))

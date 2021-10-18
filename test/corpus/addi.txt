@@ -2,118 +2,118 @@
 addi
 ====
 
-addi M x T
-addi x t #DATA
-addi F #nerv M
-addi f #PAGE #DIAL
-addi t +0892 m
-addi X +1321 #PAGE
-addi #nerv M F
-addi #DATA T #Dial
-addi #DATA #Nerv X
-addi #page #Dial #NERV
-addi #page -850 f
-addi #Data 752 #Dial
-addi 594 m x
-addi +1055 t #Nerv
-addi -646 #DATA t
-addi 1382 #page #PAGE
-addi -57 -1142 f
-addi -484 1490 #data
+ADDI T M F
+Addi x t #dial
+addi M #page F
+AddI X #NERV #DATA
+ADDI M -1252 t
+aDDI x -427 #Data
+addI #PAGE f F
+addI #nerv x #dial
+AdDI #data #DIAL m
+ADdi #PAGE #NERV #nerv
+aDDI #page +1234 T
+aDDI #DATA -1219 #dial
+AdDI -21 t X
+addi 1424 M #Data
+aDDi +499 #PAGE f
+aDdI +1381 #NERV #Dial
+adDI -1868 -161 F
+aDdI 450 +122 #nerv
 
 ---
 
 (exa
     (addi
         (register
-            (m))
-        (register
-            (x))
-        (register
-            (t)))
-    (addi
-        (register
-            (x))
-        (register
             (t))
-        (register
-            (hardware)))
-    (addi
-        (register
-            (f))
-        (register
-            (hardware))
-        (register
-            (m)))
-    (addi
-        (register
-            (f))
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (addi
-        (register
-            (t))
-        (number)
-        (register
-            (m)))
-    (addi
-        (register
-            (x))
-        (number)
-        (register
-            (hardware)))
-    (addi
-        (register
-            (hardware))
         (register
             (m))
         (register
             (f)))
     (addi
         (register
-            (hardware))
+            (x))
         (register
             (t))
         (register
             (hardware)))
     (addi
         (register
-            (hardware))
+            (m))
         (register
             (hardware))
         (register
-            (x)))
+            (f)))
     (addi
         (register
-            (hardware))
+            (x))
         (register
             (hardware))
         (register
             (hardware)))
     (addi
         (register
-            (hardware))
+            (m))
         (number)
+        (register
+            (t)))
+    (addi
+        (register
+            (x))
+        (number)
+        (register
+            (hardware)))
+    (addi
+        (register
+            (hardware))
+        (register
+            (f))
         (register
             (f)))
     (addi
         (register
             (hardware))
+        (register
+            (x))
+        (register
+            (hardware)))
+    (addi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (m)))
+    (addi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (addi
+        (register
+            (hardware))
+        (number)
+        (register
+            (t)))
+    (addi
+        (register
+            (hardware))
         (number)
         (register
             (hardware)))
     (addi
         (number)
         (register
-            (m))
+            (t))
         (register
             (x)))
     (addi
         (number)
         (register
-            (t))
+            (m))
         (register
             (hardware)))
     (addi
@@ -121,7 +121,7 @@ addi -484 1490 #data
         (register
             (hardware))
         (register
-            (t)))
+            (f)))
     (addi
         (number)
         (register

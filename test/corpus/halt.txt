@@ -9,6 +9,6 @@ halt
 ---
 
 (exa
-  (halt)
-  (halt)
-  (halt))
+    (halt)
+    (halt)
+    (halt))

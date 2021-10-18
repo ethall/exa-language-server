@@ -2,65 +2,65 @@
 subi
 ====
 
-subi x m t
-subi M X #Nerv
-subi f #dial f
-subi X #nerv #DATA
-subi T -1375 M
-subi M -820 #Dial
-subi #page x T
-subi #Dial f #NERV
-subi #data #Page X
-subi #Nerv #Page #data
-subi #dial -107 T
-subi #nerv 0016 #PAGE
-subi 1295 M F
-subi -1266 x #DIAL
-subi +510 #DATA f
-subi +741 #nerv #Dial
-subi 428 +439 t
-subi +376 -0817 #Data
+SUBI f T M
+Subi x f #NERV
+subi X #page t
+SUbI f #dial #Data
+SUbI m -1100 m
+SUBi t 424 #nerv
+suBI #dial X F
+SuBI #Nerv f #page
+SUbI #Data #dial M
+SUbi #Data #NERV #page
+sUbI #NERV -778 X
+suBi #DIAL -679 #Data
+subI -1849 t T
+SUBi -892 M #Page
+subI -1302 #DIAL X
+SubI -323 #Page #nerv
+SubI 308 +720 F
+Subi 1296 1015 #Data
 
 ---
 
 (exa
     (subi
         (register
-            (x))
+            (f))
         (register
-            (m))
+            (t))
         (register
-            (t)))
+            (m)))
     (subi
         (register
-            (m))
+            (x))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (subi
         (register
             (x))
         (register
-            (hardware)))
+            (hardware))
+        (register
+            (t)))
     (subi
         (register
             (f))
         (register
             (hardware))
         (register
-            (f)))
-    (subi
-        (register
-            (x))
-        (register
-            (hardware))
-        (register
             (hardware)))
     (subi
         (register
-            (t))
+            (m))
         (number)
         (register
             (m)))
     (subi
         (register
-            (m))
+            (t))
         (number)
         (register
             (hardware)))
@@ -70,7 +70,7 @@ subi +376 -0817 #Data
         (register
             (x))
         (register
-            (t)))
+            (f)))
     (subi
         (register
             (hardware))
@@ -84,44 +84,44 @@ subi +376 -0817 #Data
         (register
             (hardware))
         (register
+            (m)))
+    (subi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (subi
+        (register
+            (hardware))
+        (number)
+        (register
             (x)))
     (subi
         (register
             (hardware))
-        (register
-            (hardware))
+        (number)
         (register
             (hardware)))
     (subi
-        (register
-            (hardware))
         (number)
+        (register
+            (t))
         (register
             (t)))
-    (subi
-        (register
-            (hardware))
-        (number)
-        (register
-            (hardware)))
     (subi
         (number)
         (register
             (m))
         (register
-            (f)))
-    (subi
-        (number)
-        (register
-            (x))
-        (register
             (hardware)))
     (subi
         (number)
         (register
             (hardware))
         (register
-            (f)))
+            (x)))
     (subi
         (number)
         (register
@@ -132,7 +132,7 @@ subi +376 -0817 #Data
         (number)
         (number)
         (register
-            (t)))
+            (f)))
     (subi
         (number)
         (number)

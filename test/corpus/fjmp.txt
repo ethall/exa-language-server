@@ -2,9 +2,9 @@
 fjmp
 ====
 
-fjmp FOO_BAR
-fjmp Bar
-fjmp ZORKGORK_BORK
+FJMP foo_bar
+Fjmp Bar
+fjmp foo
 
 ---
 

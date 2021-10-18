@@ -2,15 +2,15 @@
 host
 ====
 
-host t
-host #PAGE
+HOST f
+Host #PAGE
 
 ---
 
 (exa
     (host
         (register
-            (t)))
+            (f)))
     (host
         (register
             (hardware))))

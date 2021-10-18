@@ -2,45 +2,45 @@
 modi
 ====
 
-modi x F t
-modi t x #Dial
-modi m #NERV f
-modi m #DATA #nerv
-modi F -1741 t
-modi x +1538 #page
-modi #DIAL X F
-modi #Data m #Nerv
-modi #page #DATA t
-modi #dial #Nerv #DATA
-modi #dial -53 f
-modi #Page 1648 #page
-modi 593 X M
-modi -372 t #data
-modi -826 #DIAL t
-modi -890 #nerv #dial
-modi -411 580 f
-modi +306 -1125 #PAGE
+MODI M m x
+Modi F T #nerv
+modi X #PAGE f
+Modi M #DIAL #nerv
+moDI t -1094 M
+MODi T 666 #data
+MOdI #data f X
+modi #DIAL f #PAGE
+moDI #NERV #Nerv t
+mOdi #page #dial #DATA
+MODi #PAGE -0679 x
+MOdI #nerv -0770 #Data
+mOdI -606 m X
+modi +0041 f #DIAL
+MODI -23 #DIAL M
+MOdi +427 #data #PAGE
+modi -413 -1526 t
+mOdi +966 -868 #Nerv
 
 ---
 
 (exa
     (modi
         (register
-            (x))
+            (m))
+        (register
+            (m))
+        (register
+            (x)))
+    (modi
         (register
             (f))
-        (register
-            (t)))
-    (modi
         (register
             (t))
         (register
-            (x))
-        (register
             (hardware)))
     (modi
         (register
-            (m))
+            (x))
         (register
             (hardware))
         (register
@@ -53,86 +53,86 @@ modi +306 -1125 #PAGE
         (register
             (hardware)))
     (modi
+        (register
+            (t))
+        (number)
+        (register
+            (m)))
+    (modi
+        (register
+            (t))
+        (number)
+        (register
+            (hardware)))
+    (modi
+        (register
+            (hardware))
         (register
             (f))
-        (number)
         (register
-            (t)))
+            (x)))
     (modi
         (register
-            (x))
-        (number)
+            (hardware))
+        (register
+            (f))
         (register
             (hardware)))
     (modi
         (register
             (hardware))
         (register
-            (x))
+            (hardware))
         (register
-            (f)))
+            (t)))
     (modi
         (register
             (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (modi
+        (register
+            (hardware))
+        (number)
+        (register
+            (x)))
+    (modi
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (modi
+        (number)
         (register
             (m))
         (register
-            (hardware)))
+            (x)))
     (modi
-        (register
-            (hardware))
-        (register
-            (hardware))
-        (register
-            (t)))
-    (modi
-        (register
-            (hardware))
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (modi
-        (register
-            (hardware))
         (number)
         (register
-            (f)))
-    (modi
-        (register
-            (hardware))
-        (number)
+            (f))
         (register
             (hardware)))
     (modi
         (number)
         (register
-            (x))
+            (hardware))
         (register
             (m)))
     (modi
         (number)
         (register
-            (t))
+            (hardware))
         (register
             (hardware)))
     (modi
         (number)
-        (register
-            (hardware))
+        (number)
         (register
             (t)))
-    (modi
-        (number)
-        (register
-            (hardware))
-        (register
-            (hardware)))
-    (modi
-        (number)
-        (number)
-        (register
-            (f)))
     (modi
         (number)
         (number)

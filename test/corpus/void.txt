@@ -2,16 +2,25 @@
 void
 ====
 
-VOID F
+VOID f
 Void m
 void f
+VOId m
+VoId F
+vOiD m
 
 ---
 
 (exa
-  (void
-    (f))
-  (void
-    (m))
-  (void
-    (f)))
+    (void
+        (f))
+    (void
+        (m))
+    (void
+        (f))
+    (void
+        (m))
+    (void
+        (f))
+    (void
+        (m)))
