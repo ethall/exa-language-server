@@ -5,6 +5,12 @@ binding.gyp
 # Build artifacts
 target/
 
+# Generated test artifacts
+test/generated
+
+# mypy
+.mypy_cache/
+
 # Logs
 logs
 *.log
