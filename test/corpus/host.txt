@@ -1,0 +1,16 @@
+====
+host
+====
+
+host t
+host #PAGE
+
+---
+
+(exa
+    (host
+        (register
+            (t)))
+    (host
+        (register
+            (hardware))))

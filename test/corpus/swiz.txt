@@ -1,0 +1,140 @@
+====
+swiz
+====
+
+swiz x M x
+swiz T F #Nerv
+swiz m #DATA m
+swiz T #data #Nerv
+swiz f 0128 x
+swiz F 21 #DIAL
+swiz #PAGE M X
+swiz #DIAL T #DATA
+swiz #Nerv #Page f
+swiz #Nerv #page #DATA
+swiz #Dial +205 t
+swiz #DIAL 467 #PAGE
+swiz 561 m X
+swiz -406 f #Nerv
+swiz -542 #data T
+swiz -1701 #DATA #Page
+swiz +43 -1393 X
+swiz -451 1435 #Nerv
+
+---
+
+(exa
+    (swiz
+        (register
+            (x))
+        (register
+            (m))
+        (register
+            (x)))
+    (swiz
+        (register
+            (t))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (swiz
+        (register
+            (m))
+        (register
+            (hardware))
+        (register
+            (m)))
+    (swiz
+        (register
+            (t))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (swiz
+        (register
+            (f))
+        (number)
+        (register
+            (x)))
+    (swiz
+        (register
+            (f))
+        (number)
+        (register
+            (hardware)))
+    (swiz
+        (register
+            (hardware))
+        (register
+            (m))
+        (register
+            (x)))
+    (swiz
+        (register
+            (hardware))
+        (register
+            (t))
+        (register
+            (hardware)))
+    (swiz
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (f)))
+    (swiz
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (swiz
+        (register
+            (hardware))
+        (number)
+        (register
+            (t)))
+    (swiz
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (swiz
+        (number)
+        (register
+            (m))
+        (register
+            (x)))
+    (swiz
+        (number)
+        (register
+            (f))
+        (register
+            (hardware)))
+    (swiz
+        (number)
+        (register
+            (hardware))
+        (register
+            (t)))
+    (swiz
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (swiz
+        (number)
+        (number)
+        (register
+            (x)))
+    (swiz
+        (number)
+        (number)
+        (register
+            (hardware))))

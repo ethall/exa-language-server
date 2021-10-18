@@ -1,0 +1,17 @@
+====
+repl
+====
+
+repl ZorkGork_Bork
+repl Foo
+repl Foo_bar
+
+---
+
+(exa
+    (repl
+        (label))
+    (repl
+        (label))
+    (repl
+        (label)))

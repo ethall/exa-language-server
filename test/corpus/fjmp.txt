@@ -1,0 +1,17 @@
+====
+fjmp
+====
+
+fjmp FOO_BAR
+fjmp Bar
+fjmp ZORKGORK_BORK
+
+---
+
+(exa
+    (fjmp
+        (label))
+    (fjmp
+        (label))
+    (fjmp
+        (label)))

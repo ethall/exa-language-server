@@ -1,0 +1,83 @@
+====
+test
+====
+
+test M > F
+test x = #DIAL
+test m < +0598
+test #Data = t
+test #PAGE < #DIAL
+test #nerv > -1491
+test +417 > F
+test 1367 = #nerv
+test -228 < -1137
+test EoF
+test eof
+test EOF
+test MRD
+test MRd
+test MRd
+
+---
+
+(exa
+    (test
+        (register
+            (m))
+        (binary_operator)
+        (register
+            (f)))
+    (test
+        (register
+            (x))
+        (binary_operator)
+        (register
+            (hardware)))
+    (test
+        (register
+            (m))
+        (binary_operator)
+        (number))
+    (test
+        (register
+            (hardware))
+        (binary_operator)
+        (register
+            (t)))
+    (test
+        (register
+            (hardware))
+        (binary_operator)
+        (register
+            (hardware)))
+    (test
+        (register
+            (hardware))
+        (binary_operator)
+        (number))
+    (test
+        (number)
+        (binary_operator)
+        (register
+            (f)))
+    (test
+        (number)
+        (binary_operator)
+        (register
+            (hardware)))
+    (test
+        (number)
+        (binary_operator)
+        (number))
+    (test
+        (eof))
+    (test
+        (eof))
+    (test
+        (eof))
+    (test
+        (mrd))
+    (test
+        (mrd))
+    (test
+        (mrd)))

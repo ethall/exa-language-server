@@ -1,0 +1,14 @@
+====
+drop
+====
+
+DROP
+Drop
+drop
+
+---
+
+(exa
+  (drop)
+  (drop)
+  (drop))

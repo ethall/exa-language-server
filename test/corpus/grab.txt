@@ -1,0 +1,19 @@
+====
+grab
+====
+
+grab x
+grab #data
+grab 972
+
+---
+
+(exa
+    (grab
+        (register
+            (x)))
+    (grab
+        (register
+            (hardware)))
+    (grab
+        (number)))

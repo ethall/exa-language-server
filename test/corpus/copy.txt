@@ -1,0 +1,42 @@
+====
+copy
+====
+
+copy m X
+copy T #Data
+copy #Nerv f
+copy #DIAL #Page
+copy -891 F
+copy 0518 #Dial
+
+---
+
+(exa
+    (copy
+        (register
+            (m))
+        (register
+            (x)))
+    (copy
+        (register
+            (t))
+        (register
+            (hardware)))
+    (copy
+        (register
+            (hardware))
+        (register
+            (f)))
+    (copy
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (copy
+        (number)
+        (register
+            (f)))
+    (copy
+        (number)
+        (register
+            (hardware))))

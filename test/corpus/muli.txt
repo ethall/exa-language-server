@@ -1,0 +1,140 @@
+====
+muli
+====
+
+muli M f X
+muli t M #Page
+muli m #Nerv T
+muli F #dial #data
+muli x -138 m
+muli T -23 #Page
+muli #Dial X f
+muli #Nerv F #Page
+muli #data #DIAL t
+muli #DATA #Page #NERV
+muli #Data -72 x
+muli #Dial -785 #Nerv
+muli +524 M T
+muli -456 f #Page
+muli -280 #DATA M
+muli 198 #PAGE #nerv
+muli +561 +516 X
+muli -734 -293 #dial
+
+---
+
+(exa
+    (muli
+        (register
+            (m))
+        (register
+            (f))
+        (register
+            (x)))
+    (muli
+        (register
+            (t))
+        (register
+            (m))
+        (register
+            (hardware)))
+    (muli
+        (register
+            (m))
+        (register
+            (hardware))
+        (register
+            (t)))
+    (muli
+        (register
+            (f))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (muli
+        (register
+            (x))
+        (number)
+        (register
+            (m)))
+    (muli
+        (register
+            (t))
+        (number)
+        (register
+            (hardware)))
+    (muli
+        (register
+            (hardware))
+        (register
+            (x))
+        (register
+            (f)))
+    (muli
+        (register
+            (hardware))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (muli
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (t)))
+    (muli
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (muli
+        (register
+            (hardware))
+        (number)
+        (register
+            (x)))
+    (muli
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (muli
+        (number)
+        (register
+            (m))
+        (register
+            (t)))
+    (muli
+        (number)
+        (register
+            (f))
+        (register
+            (hardware)))
+    (muli
+        (number)
+        (register
+            (hardware))
+        (register
+            (m)))
+    (muli
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (muli
+        (number)
+        (number)
+        (register
+            (x)))
+    (muli
+        (number)
+        (number)
+        (register
+            (hardware))))

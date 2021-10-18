@@ -1,0 +1,140 @@
+====
+modi
+====
+
+modi x F t
+modi t x #Dial
+modi m #NERV f
+modi m #DATA #nerv
+modi F -1741 t
+modi x +1538 #page
+modi #DIAL X F
+modi #Data m #Nerv
+modi #page #DATA t
+modi #dial #Nerv #DATA
+modi #dial -53 f
+modi #Page 1648 #page
+modi 593 X M
+modi -372 t #data
+modi -826 #DIAL t
+modi -890 #nerv #dial
+modi -411 580 f
+modi +306 -1125 #PAGE
+
+---
+
+(exa
+    (modi
+        (register
+            (x))
+        (register
+            (f))
+        (register
+            (t)))
+    (modi
+        (register
+            (t))
+        (register
+            (x))
+        (register
+            (hardware)))
+    (modi
+        (register
+            (m))
+        (register
+            (hardware))
+        (register
+            (f)))
+    (modi
+        (register
+            (m))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (modi
+        (register
+            (f))
+        (number)
+        (register
+            (t)))
+    (modi
+        (register
+            (x))
+        (number)
+        (register
+            (hardware)))
+    (modi
+        (register
+            (hardware))
+        (register
+            (x))
+        (register
+            (f)))
+    (modi
+        (register
+            (hardware))
+        (register
+            (m))
+        (register
+            (hardware)))
+    (modi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (t)))
+    (modi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (modi
+        (register
+            (hardware))
+        (number)
+        (register
+            (f)))
+    (modi
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (modi
+        (number)
+        (register
+            (x))
+        (register
+            (m)))
+    (modi
+        (number)
+        (register
+            (t))
+        (register
+            (hardware)))
+    (modi
+        (number)
+        (register
+            (hardware))
+        (register
+            (t)))
+    (modi
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (modi
+        (number)
+        (number)
+        (register
+            (f)))
+    (modi
+        (number)
+        (number)
+        (register
+            (hardware))))

@@ -1,0 +1,17 @@
+====
+jump
+====
+
+jump ZorkGork_Bork
+jump FOO_BAR_BAZ
+jump bar
+
+---
+
+(exa
+    (jump
+        (label))
+    (jump
+        (label))
+    (jump
+        (label)))

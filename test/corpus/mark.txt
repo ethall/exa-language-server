@@ -1,0 +1,17 @@
+====
+mark
+====
+
+mark FOO_BAR
+mark FOO
+mark baz
+
+---
+
+(exa
+    (mark
+        (label))
+    (mark
+        (label))
+    (mark
+        (label)))

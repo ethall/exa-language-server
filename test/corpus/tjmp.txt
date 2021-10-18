@@ -1,0 +1,17 @@
+====
+tjmp
+====
+
+tjmp Foo
+tjmp Foo_Bar_Baz
+tjmp baz
+
+---
+
+(exa
+    (tjmp
+        (label))
+    (tjmp
+        (label))
+    (tjmp
+        (label)))

@@ -1,0 +1,140 @@
+====
+addi
+====
+
+addi M x T
+addi x t #DATA
+addi F #nerv M
+addi f #PAGE #DIAL
+addi t +0892 m
+addi X +1321 #PAGE
+addi #nerv M F
+addi #DATA T #Dial
+addi #DATA #Nerv X
+addi #page #Dial #NERV
+addi #page -850 f
+addi #Data 752 #Dial
+addi 594 m x
+addi +1055 t #Nerv
+addi -646 #DATA t
+addi 1382 #page #PAGE
+addi -57 -1142 f
+addi -484 1490 #data
+
+---
+
+(exa
+    (addi
+        (register
+            (m))
+        (register
+            (x))
+        (register
+            (t)))
+    (addi
+        (register
+            (x))
+        (register
+            (t))
+        (register
+            (hardware)))
+    (addi
+        (register
+            (f))
+        (register
+            (hardware))
+        (register
+            (m)))
+    (addi
+        (register
+            (f))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (addi
+        (register
+            (t))
+        (number)
+        (register
+            (m)))
+    (addi
+        (register
+            (x))
+        (number)
+        (register
+            (hardware)))
+    (addi
+        (register
+            (hardware))
+        (register
+            (m))
+        (register
+            (f)))
+    (addi
+        (register
+            (hardware))
+        (register
+            (t))
+        (register
+            (hardware)))
+    (addi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (x)))
+    (addi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (addi
+        (register
+            (hardware))
+        (number)
+        (register
+            (f)))
+    (addi
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (addi
+        (number)
+        (register
+            (m))
+        (register
+            (x)))
+    (addi
+        (number)
+        (register
+            (t))
+        (register
+            (hardware)))
+    (addi
+        (number)
+        (register
+            (hardware))
+        (register
+            (t)))
+    (addi
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (addi
+        (number)
+        (number)
+        (register
+            (f)))
+    (addi
+        (number)
+        (number)
+        (register
+            (hardware))))

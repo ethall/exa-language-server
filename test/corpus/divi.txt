@@ -1,0 +1,140 @@
+====
+divi
+====
+
+divi t F m
+divi X F #PAGE
+divi X #DATA T
+divi M #NERV #dial
+divi T 661 f
+divi X 0632 #DATA
+divi #Page M f
+divi #nerv t #dial
+divi #Dial #DATA X
+divi #page #Nerv #NERV
+divi #DATA -1542 m
+divi #Page -3138 #DIAL
+divi +244 F x
+divi -617 t #Data
+divi +19 #Page M
+divi 560 #Nerv #dial
+divi -822 1501 M
+divi 523 +524 #Page
+
+---
+
+(exa
+    (divi
+        (register
+            (t))
+        (register
+            (f))
+        (register
+            (m)))
+    (divi
+        (register
+            (x))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (divi
+        (register
+            (x))
+        (register
+            (hardware))
+        (register
+            (t)))
+    (divi
+        (register
+            (m))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (divi
+        (register
+            (t))
+        (number)
+        (register
+            (f)))
+    (divi
+        (register
+            (x))
+        (number)
+        (register
+            (hardware)))
+    (divi
+        (register
+            (hardware))
+        (register
+            (m))
+        (register
+            (f)))
+    (divi
+        (register
+            (hardware))
+        (register
+            (t))
+        (register
+            (hardware)))
+    (divi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (x)))
+    (divi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (divi
+        (register
+            (hardware))
+        (number)
+        (register
+            (m)))
+    (divi
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (divi
+        (number)
+        (register
+            (f))
+        (register
+            (x)))
+    (divi
+        (number)
+        (register
+            (t))
+        (register
+            (hardware)))
+    (divi
+        (number)
+        (register
+            (hardware))
+        (register
+            (m)))
+    (divi
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (divi
+        (number)
+        (number)
+        (register
+            (m)))
+    (divi
+        (number)
+        (number)
+        (register
+            (hardware))))

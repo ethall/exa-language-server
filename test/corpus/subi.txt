@@ -1,0 +1,140 @@
+====
+subi
+====
+
+subi x m t
+subi M X #Nerv
+subi f #dial f
+subi X #nerv #DATA
+subi T -1375 M
+subi M -820 #Dial
+subi #page x T
+subi #Dial f #NERV
+subi #data #Page X
+subi #Nerv #Page #data
+subi #dial -107 T
+subi #nerv 0016 #PAGE
+subi 1295 M F
+subi -1266 x #DIAL
+subi +510 #DATA f
+subi +741 #nerv #Dial
+subi 428 +439 t
+subi +376 -0817 #Data
+
+---
+
+(exa
+    (subi
+        (register
+            (x))
+        (register
+            (m))
+        (register
+            (t)))
+    (subi
+        (register
+            (m))
+        (register
+            (x))
+        (register
+            (hardware)))
+    (subi
+        (register
+            (f))
+        (register
+            (hardware))
+        (register
+            (f)))
+    (subi
+        (register
+            (x))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (subi
+        (register
+            (t))
+        (number)
+        (register
+            (m)))
+    (subi
+        (register
+            (m))
+        (number)
+        (register
+            (hardware)))
+    (subi
+        (register
+            (hardware))
+        (register
+            (x))
+        (register
+            (t)))
+    (subi
+        (register
+            (hardware))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (subi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (x)))
+    (subi
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (subi
+        (register
+            (hardware))
+        (number)
+        (register
+            (t)))
+    (subi
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (subi
+        (number)
+        (register
+            (m))
+        (register
+            (f)))
+    (subi
+        (number)
+        (register
+            (x))
+        (register
+            (hardware)))
+    (subi
+        (number)
+        (register
+            (hardware))
+        (register
+            (f)))
+    (subi
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (subi
+        (number)
+        (number)
+        (register
+            (t)))
+    (subi
+        (number)
+        (number)
+        (register
+            (hardware))))

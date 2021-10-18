@@ -1,0 +1,140 @@
+====
+rand
+====
+
+rand m x m
+rand t f #dial
+rand x #page X
+rand m #nerv #PAGE
+rand T -745 f
+rand M -45 #data
+rand #dial x T
+rand #Nerv F #data
+rand #Page #dial f
+rand #DIAL #DATA #PAGE
+rand #Nerv +0783 m
+rand #Dial -296 #PAGE
+rand +605 x t
+rand +645 T #nerv
+rand -629 #data F
+rand +1677 #nerv #DATA
+rand 1485 304 m
+rand -1300 -342 #Page
+
+---
+
+(exa
+    (rand
+        (register
+            (m))
+        (register
+            (x))
+        (register
+            (m)))
+    (rand
+        (register
+            (t))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (rand
+        (register
+            (x))
+        (register
+            (hardware))
+        (register
+            (x)))
+    (rand
+        (register
+            (m))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (rand
+        (register
+            (t))
+        (number)
+        (register
+            (f)))
+    (rand
+        (register
+            (m))
+        (number)
+        (register
+            (hardware)))
+    (rand
+        (register
+            (hardware))
+        (register
+            (x))
+        (register
+            (t)))
+    (rand
+        (register
+            (hardware))
+        (register
+            (f))
+        (register
+            (hardware)))
+    (rand
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (f)))
+    (rand
+        (register
+            (hardware))
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (rand
+        (register
+            (hardware))
+        (number)
+        (register
+            (m)))
+    (rand
+        (register
+            (hardware))
+        (number)
+        (register
+            (hardware)))
+    (rand
+        (number)
+        (register
+            (x))
+        (register
+            (t)))
+    (rand
+        (number)
+        (register
+            (t))
+        (register
+            (hardware)))
+    (rand
+        (number)
+        (register
+            (hardware))
+        (register
+            (f)))
+    (rand
+        (number)
+        (register
+            (hardware))
+        (register
+            (hardware)))
+    (rand
+        (number)
+        (number)
+        (register
+            (m)))
+    (rand
+        (number)
+        (number)
+        (register
+            (hardware))))

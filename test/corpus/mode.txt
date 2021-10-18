@@ -1,0 +1,14 @@
+====
+mode
+====
+
+MODE
+Mode
+mode
+
+---
+
+(exa
+  (mode)
+  (mode)
+  (mode))

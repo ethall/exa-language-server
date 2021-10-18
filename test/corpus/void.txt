@@ -1,0 +1,17 @@
+====
+void
+====
+
+VOID F
+Void m
+void f
+
+---
+
+(exa
+  (void
+    (f))
+  (void
+    (m))
+  (void
+    (f)))

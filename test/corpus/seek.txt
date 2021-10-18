@@ -1,0 +1,19 @@
+====
+seek
+====
+
+seek f
+seek #NERV
+seek +4
+
+---
+
+(exa
+    (seek
+        (register
+            (f)))
+    (seek
+        (register
+            (hardware)))
+    (seek
+        (number)))
