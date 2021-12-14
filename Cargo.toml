@@ -1,26 +1,32 @@
 [package]
 name = "tree-sitter-exa"
-description = "exa grammar for the tree-sitter parsing library"
-version = "0.0.1"
-keywords = ["incremental", "parsing", "exa"]
-categories = ["parsing", "text-editors"]
-repository = "https://github.com/tree-sitter/tree-sitter-exa"
-edition = "2018"
+version = "0.1.0"
+edition = "2021"
+description = "Tree-sitter grammar for the EXA programming language from Zachtronics' EXAPUNKS."
+readme = "README.md"
+repository = "https://github.com/ethall/tree-sitter-exa"
 license = "MIT"
+keywords = [
+    "tree-sitter",
+    "parser",
+    "exa",
+    "exapunks",
+    "zachtronics"
+]
+categories = [
+    "development-tools",
+    "parser-implementations"
+]
 
 build = "bindings/rust/build.rs"
-include = [
-  "bindings/rust/*",
-  "grammar.js",
-  "queries/*",
-  "src/*",
-]
 
 [lib]
 path = "bindings/rust/lib.rs"
 
 [dependencies]
 tree-sitter = "~0.20.0"
+lsp-server = "~0.5.0"
 
 [build-dependencies]
 cc = "1.0"
+tree-sitter-cli = "~0.20.0"

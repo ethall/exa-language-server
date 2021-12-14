@@ -1,6 +1,7 @@
 # Unused `tree-sitter-cli generate` artifacts
 bindings/node
 binding.gyp
+/package.json
 
 # Build artifacts
 target/
