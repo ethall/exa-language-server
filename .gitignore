@@ -1,20 +1,20 @@
 # Unused `tree-sitter-cli generate` artifacts
-bindings/node
-binding.gyp
-/package.json
+**/bindings/node
+**/binding.gyp
+**/package.json
 
 # Build artifacts
 target/
 
 # Generated test artifacts
-test/generated
-/parser.exp
-/parser.lib
-/parser.obj
-/scanner.obj
+**/test/generated
+**/parser.exp
+**/parser.lib
+**/parser.obj
+**/scanner.obj
 
 # mypy
-.mypy_cache/
+**/.mypy_cache/
 
 # Logs
 logs
