@@ -1,0 +1,20 @@
+[package]
+name = "tree-sitter-exa"
+version = "0.1.0"
+edition = "2021"
+description = "Tree-sitter grammar for the EXA programming language from Zachtronics' EXAPUNKS."
+readme = "../README.md"
+repository = "https://github.com/ethall/exa-language-server"
+license = "MIT"
+
+build = "bindings/rust/build.rs"
+
+[lib]
+path = "bindings/rust/lib.rs"
+
+[dependencies]
+tree-sitter = "~0.20.0"
+
+[build-dependencies]
+cc = "1.0"
+tree-sitter-cli = "~0.20.0"
