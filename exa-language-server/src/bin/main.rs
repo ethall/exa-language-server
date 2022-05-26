@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
 }
 
 fn handle_messages(connection: Connection, init_params: serde_json::Value) -> Result<(), Box<dyn Error + Sync + Send>> {
-    let mut _documents: HashMap<Url, Document> = HashMap::new(); // TODO
+    let mut documents: HashMap<Url, Document> = HashMap::new();
     let _init_params: InitializedParams = serde_json::from_value(init_params).unwrap();
     for msg in &connection.receiver {
         eprintln!("received message: {:?}", msg);
@@ -51,6 +51,14 @@ fn handle_messages(connection: Connection, init_params: serde_json::Value) -> Re
                 let notification = match extract_notification::<DidOpenTextDocument>(notification) {
                     Ok(params) => {
                         eprintln!("DidOpenTextDocumentParams -> {:?}", params);
+                        let prev_size = documents.len();
+                        if !documents.contains_key(&params.text_document.uri) {
+                            documents.insert(
+                                params.text_document.uri.clone(),
+                                Document::new(params.text_document.uri, params.text_document.text),
+                            );
+                        }
+                        eprintln!("open documents: {:?} -> {:?}", prev_size, documents.len());
                         continue;
                     },
                     Err(notification) => notification,
@@ -65,6 +73,9 @@ fn handle_messages(connection: Connection, init_params: serde_json::Value) -> Re
                 let notification = match extract_notification::<DidCloseTextDocument>(notification) {
                     Ok(params) => {
                         eprintln!("DidCloseTextDocument -> {:?}", params);
+                        let prev_size = documents.len();
+                        documents.remove(&params.text_document.uri);
+                        eprintln!("open documents: {:?} -> {:?}", prev_size, documents.len());
                         continue;
                     },
                     Err(notification) => notification,
