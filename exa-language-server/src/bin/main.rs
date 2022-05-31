@@ -155,6 +155,24 @@ fn handle_messages(
                     }
                     Err(notification) => notification,
                 };
+                let notification = match extract_notification::<DidSaveTextDocument>(notification) {
+                    Ok(params) => {
+                        eprintln!("DidSaveTextDocument -> {:?}", params);
+                        if documents.contains_key(&params.text_document.uri) {
+                            let document = documents.get(&params.text_document.uri).unwrap();
+                            eprintln!(
+                                "we think the document looks like:\n{:?}",
+                                document.read().unwrap().text
+                            );
+                            eprintln!(
+                                "and has an AST like:\n{:?}",
+                                document.read().unwrap().tree.root_node().to_sexp()
+                            );
+                        }
+                        continue;
+                    }
+                    Err(notification) => notification,
+                };
                 eprintln!("nothing handles notification {:?}", notification);
             }
         }
