@@ -21,4 +21,10 @@ impl Document {
             version
         }
     }
+
+    pub fn update_and_reparse(&mut self, version: i64, text: String) {
+        self.version = version;
+        self.text = text.clone();
+        self.tree = self.parser.parse(self.text.clone(), Some(&self.tree)).unwrap();
+    }
 }
