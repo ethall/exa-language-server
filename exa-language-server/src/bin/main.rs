@@ -2,12 +2,14 @@ use std::collections::HashMap;
 use std::error::Error;
 
 use lsp_server::{Connection, Message, Notification, Request, RequestId};
+use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument};
 use lsp_types::{
-    InitializedParams, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
+    InitializedParams, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url, Position,
 };
 
 use exa_language_server::documents::Document;
+use tree_sitter::{InputEdit, Point};
 
 fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     eprintln!("starting EXA LSP server");
@@ -61,7 +63,11 @@ fn handle_messages(
                         if !documents.contains_key(&params.text_document.uri) {
                             documents.insert(
                                 params.text_document.uri.clone(),
-                                Document::new(params.text_document.uri, params.text_document.text),
+                                Document::new(
+                                    params.text_document.uri,
+                                    params.text_document.version.into(),
+                                    params.text_document.text
+                                ),
                             );
                         }
                         eprintln!("open documents: {:?} -> {:?}", prev_size, documents.len());
@@ -73,6 +79,49 @@ fn handle_messages(
                 {
                     Ok(params) => {
                         eprintln!("DidChangeTextDocument -> {:?}", params);
+                        let document = documents.get(&params.text_document.uri).unwrap();
+                        let mut text_document = FullTextDocument::new(
+                            document.uri.clone(), String::from("exalang"), document.version, document.text.clone()
+                        );
+                        for change_event in params.content_changes {
+                            let range = change_event.range.unwrap();
+                            let start_offset = text_document.offset_at(range.start);
+                            let end_offset = text_document.offset_at(range.end);
+                            let (start_byte, old_end_byte) = text_document.transform_offset_to_byte_offset(
+                                start_offset,
+                                end_offset
+                            );
+                            text_document.update(vec![change_event.clone()], params.text_document.version.into());
+                            let new_end_byte = start_byte + change_event.text.chars().fold(0, |acc, c| acc + c.len_utf8());
+                            let new_end_position = text_document.position_at(new_end_byte.try_into().unwrap());
+                            /*
+                             *                  8
+                             *          fn test(|) {}
+                             *
+                             *          fn test(a: u32|) {}
+                             *                        14
+                             * Change:
+                             *  text: "a: u32"
+                             *    length: 6
+                             *  range:
+                             *    start:
+                             *      line: 0
+                             *      character: 8
+                             *    end:
+                             *      line: 0
+                             *      character: 8
+                             *  range_len: 0
+                             */
+                            let input_edit = InputEdit {
+                                start_byte,
+                                old_end_byte,
+                                new_end_byte,
+                                start_position: position_to_point(&range.start),
+                                old_end_position: position_to_point(&range.end),
+                                new_end_position: position_to_point(&new_end_position)
+                            };
+                            document.tree.edit(&input_edit);
+                        }
                         continue;
                     }
                     Err(notification) => notification,
@@ -109,4 +158,11 @@ where
     N::Params: serde::de::DeserializeOwned,
 {
     notification.extract(N::METHOD)
+}
+
+fn position_to_point(position: &Position) -> Point {
+    return Point {
+        row: position.line.try_into().unwrap(),
+        column: position.character.try_into().unwrap(),
+    };
 }
