@@ -4,7 +4,9 @@ use std::sync::{Arc, RwLock};
 
 use lsp_server::{Connection, Message, Notification, Request, RequestId};
 use lsp_text_document::FullTextDocument;
-use lsp_types::notification::{DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument};
+use lsp_types::notification::{
+    DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument,
+};
 use lsp_types::{
     InitializedParams, Position, ServerCapabilities, TextDocumentSyncCapability,
     TextDocumentSyncKind, Url,
@@ -134,6 +136,10 @@ fn handle_messages(
                             };
                             document.write().unwrap().tree.edit(&input_edit);
                         }
+                        document
+                            .write()
+                            .unwrap()
+                            .update_and_reparse(text_document.version, text_document.text);
                         continue;
                     }
                     Err(notification) => notification,
