@@ -95,22 +95,22 @@ module.exports = grammar({
 
         mark: $ => seq(
             /[mM][aA][rR][kK]/,
-            $.label
+            field('label', $.label)
         ),
 
         jump: $ => seq(
             /[jJ][uU][mM][pP]/,
-            $.label
+            field('label', $.label)
         ),
 
         true_jump: $ => seq(
             /[tT][jJ][mM][pP]/,
-            $.label
+            field('label', $.label)
         ),
 
         false_jump: $ => seq(
             /[fF][jJ][mM][pP]/,
-            $.label
+            field('label', $.label)
         ),
 
         /* TESTING VALUES */
@@ -128,7 +128,7 @@ module.exports = grammar({
 
         repl: $ => seq(
             /[rR][eE][pP][lL]/,
-            $.label
+            field('label', $.label)
         ),
 
         halt: $ => /[hH][aA][lL][tT]/,
