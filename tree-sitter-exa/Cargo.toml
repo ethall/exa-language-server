@@ -6,6 +6,7 @@ description = "Tree-sitter grammar for the EXA programming language from Zachtro
 readme = "../README.md"
 repository = "https://github.com/ethall/exa-language-server"
 license = "MIT"
+exclude = ["test/regenerate.py"]
 
 build = "bindings/rust/build.rs"
 
