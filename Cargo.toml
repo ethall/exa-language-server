@@ -1,2 +1,42 @@
+[package]
+name = "exa-language-server"
+version = "0.1.0"
+edition = "2021"
+description = "Language server for the EXA programming language from Zachtronics' EXAPUNKS."
+readme = "../README.md"
+repository = "https://github.com/ethall/exa-language-server"
+license = "MIT"
+keywords = [
+    "tree-sitter",
+    "parser",
+    "exa",
+    "exapunks",
+    "zachtronics"
+]
+categories = [
+    "development-tools",
+    "parser-implementations"
+]
+
+[lib]
+
+[[bin]]
+name = "exa-language-server"
+path = "src/bin/main.rs"
+
+[dependencies.tree-sitter-exa]
+path = "./tree-sitter-exa"
+version = "0.1.0"
+
+[dependencies]
+lsp-server = "~0.5.0"
+lsp-text-document = "~0.2.0"
+# NOTE: You'll get compiler errors if this version number is different than
+#       the version used by `lsp-text-document`.
+lsp-types = "~0.84.0"
+serde = "~1.0.0"
+serde_json = "~1.0.0"
+tree-sitter = "~0.20.0"
+
 [workspace]
-members = ["exa-language-server", "tree-sitter-exa"]
+members = ["tree-sitter-exa"]
