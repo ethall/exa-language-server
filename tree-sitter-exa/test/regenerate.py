@@ -1,8 +1,9 @@
 from enum import Enum, unique
-from typing import Any, Iterator, Optional, Union, overload
+from typing import Any, Iterator, Optional, Tuple, Union, overload
 import itertools
 import numpy.random as nprand
 import random
+import re
 
 
 MAX_NUMBER = +9999
@@ -146,6 +147,8 @@ MRD: Iterator[str] = shuffle([["MRD", "MRd", "mrd"]])
 
 CASE_STYLE: LastElementLoop = LastElementLoop("^^^^", "^___", "____", "????")
 
+FIELD_REGEX = re.compile(r"\w+: \(")
+
 
 def apply_case_style(target: str, style: str) -> str:
     result = ""
@@ -228,9 +231,10 @@ class Param:
             return f"({self.name} ({self.value.lower()}))"
         elif self.type == ParamType.HARDWARE:
             return f"({self.name} ({self.type.name.lower()}))"
+        elif self.type == ParamType.LABEL:
+            return f"label: ({self.name})"
         elif (
             self.type == ParamType.NUMBER
-            or self.type == ParamType.LABEL
             or self.type == ParamType.BINARY_OPERATOR
             or self.type == ParamType.EOF
             or self.type == ParamType.MRD
@@ -363,15 +367,37 @@ class TreeSitterTest:
         return "\n".join(content)
 
     def format_tree(self, tree: str) -> str:
+        def fastforward(iterator: Iterator[int], now: int, until: int) -> None:
+            if now < until:
+                # Fast forward our iterator over the field.
+                while next(iterator) < until:
+                    pass
+
+        def newline(partial_result: str, current_indent_level: int) -> Tuple[str, int]:
+            """Returns a (str, int)-tuple containing the updated result value and
+            indent level.
+            """
+            new_level = current_indent_level + 1
+            return (f"{partial_result}\n{self.indent * new_level}", new_level)
+
         result = ""
         indent_level = 0
-        for i in range(len(tree)):
-            if tree[i] == " " and tree[i + 1] == "(":
-                indent_level += 1
-                result += "\n" + (self.indent * indent_level)
-                continue
+        for i in (iterator := iter(range(len(tree)))) :
+            if tree[i] == " ":
+                if tree[i + 1] == "(":
+                    result, indent_level = newline(result, indent_level)
+                    continue
+                elif (match := FIELD_REGEX.match(tree, i + 1)) is not None:
+                    result, indent_level = newline(result, indent_level)
+                    result += tree[i + 1 : match.end()]
+                    fastforward(iterator, i, match.end() - 1)
+                    continue
+                else:
+                    pass
             elif tree[i] == ")":
                 indent_level -= 1
+            else:
+                pass
             result += tree[i]
         return result
 
