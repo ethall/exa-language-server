@@ -2,16 +2,16 @@
 mark
 ====
 
-MARK baz
-Mark Foo_Bar_Baz
-mark foo
+MARK bar
+Mark foo_bar_baz
+mark FOO_BAR
 
 ---
 
 (exa
     (mark
-        (label))
+        label: (label))
     (mark
-        (label))
+        label: (label))
     (mark
-        (label)))
+        label: (label)))

@@ -2,16 +2,16 @@
 jump
 ====
 
-JUMP Baz
-Jump ZorkGork_Bork
-jump foo_bar_baz
+JUMP Foo
+Jump foo_bar
+jump Foo_Bar_Baz
 
 ---
 
 (exa
     (jump
-        (label))
+        label: (label))
     (jump
-        (label))
+        label: (label))
     (jump
-        (label)))
+        label: (label)))

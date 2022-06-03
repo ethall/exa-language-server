@@ -2,16 +2,16 @@
 repl
 ====
 
-REPL bar
-Repl Foo_bar
-repl ZORKGORK_BORK
+REPL Foo
+Repl baz
+repl zorkgork_bork
 
 ---
 
 (exa
     (repl
-        (label))
+        label: (label))
     (repl
-        (label))
+        label: (label))
     (repl
-        (label)))
+        label: (label)))

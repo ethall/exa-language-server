@@ -2,16 +2,16 @@
 tjmp
 ====
 
-TJMP foo_bar
-Tjmp BAR
-tjmp ZorkGork_Bork
+TJMP ZORKGORK_BORK
+Tjmp foo_bar
+tjmp Foo_Bar_Baz
 
 ---
 
 (exa
     (tjmp
-        (label))
+        label: (label))
     (tjmp
-        (label))
+        label: (label))
     (tjmp
-        (label)))
+        label: (label)))

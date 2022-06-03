@@ -2,16 +2,16 @@
 fjmp
 ====
 
-FJMP foo_bar
-Fjmp Bar
-fjmp foo
+FJMP Bar
+Fjmp baz
+fjmp ZorkGork_Bork
 
 ---
 
 (exa
     (fjmp
-        (label))
+        label: (label))
     (fjmp
-        (label))
+        label: (label))
     (fjmp
-        (label)))
+        label: (label)))
