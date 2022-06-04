@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, RwLock};
 
-use lsp_server::{Connection, Message, Notification, Request, RequestId};
+use lsp_server::{Connection, Message, Notification, Request, RequestId, Response};
 use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{
     DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument,
@@ -13,6 +13,7 @@ use lsp_types::{
 };
 
 use exa_language_server::documents::Document;
+use exa_language_server::request::ReadDocumentation;
 use tree_sitter::{InputEdit, Point};
 
 fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
@@ -23,6 +24,10 @@ fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
         text_document_sync: Some(TextDocumentSyncCapability::Kind(
             TextDocumentSyncKind::Incremental,
         )),
+        // completion_provider: Some(CompletionOptions {
+        //     resolve_provider: Some(true),
+        //     ..CompletionOptions::default()
+        // }),
         // Default is None for all fields.
         ..ServerCapabilities::default()
     })
@@ -51,6 +56,24 @@ fn handle_messages(
                     eprintln!("shutdown request -> {:?}", request);
                     return Ok(());
                 }
+                let request = match extract_request::<ReadDocumentation>(request) {
+                    Ok((id, params)) => {
+                        eprintln!(
+                            "read documentation request -> {{id: {:?}, params: {:?}}}",
+                            id, params
+                        );
+                        connection
+                            .sender
+                            .send(Message::Response(Response {
+                                id,
+                                result: Some(serde_json::Value::String(String::from("blah"))),
+                                error: None,
+                            }))
+                            .unwrap();
+                        continue;
+                    }
+                    Err(request) => request,
+                };
                 eprintln!("nothing handles request {:?}", request);
             }
             Message::Response(response) => {
@@ -140,6 +163,7 @@ fn handle_messages(
                             .write()
                             .unwrap()
                             .update_and_reparse(text_document.version, text_document.text);
+                        eprintln!("{:?}", document.read().unwrap().tree.root_node().to_sexp());
                         continue;
                     }
                     Err(notification) => notification,
@@ -180,7 +204,7 @@ fn handle_messages(
     Ok(())
 }
 
-fn extract_request<R>(request: &Request) -> Result<(RequestId, R::Params), Request>
+fn extract_request<R>(request: Request) -> Result<(RequestId, R::Params), Request>
 where
     R: lsp_types::request::Request,
     R::Params: serde::de::DeserializeOwned,
