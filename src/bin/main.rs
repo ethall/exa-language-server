@@ -12,7 +12,7 @@ use lsp_types::{
     TextDocumentSyncKind, Url,
 };
 
-use exa_language_server::documents::Document;
+use exa_language_server::document::Document;
 use exa_language_server::request::ReadDocumentation;
 use tree_sitter::{InputEdit, Point};
 

@@ -1,2 +1,2 @@
-pub mod documents;
+pub mod document;
 pub mod request;
