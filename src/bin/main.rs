@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, RwLock};
 
+use exa_language_server::documentation::read_from_file;
 use lsp_server::{Connection, Message, Notification, Request, RequestId, Response};
 use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{
@@ -62,6 +63,9 @@ fn handle_messages(
                             "read documentation request -> {{id: {:?}, params: {:?}}}",
                             id, params
                         );
+                        let url = Url::parse(params.uri.as_str()).unwrap();
+                        let path = url.to_file_path().unwrap();
+                        read_from_file(path).unwrap();
                         connection
                             .sender
                             .send(Message::Response(Response {
