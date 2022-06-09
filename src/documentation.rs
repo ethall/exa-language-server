@@ -1,12 +1,14 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
+use std::sync::{Arc, RwLock};
 
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-struct DocumentationItem {
+pub struct DocumentationItem {
     pub name: String,
     pub description: String,
     pub operands: Option<Vec<String>>
@@ -26,17 +28,26 @@ impl DocumentationItem {
 
 #[derive(Debug, Deserialize)]
 struct Documentation {
-    documentation: Vec<DocumentationItem>
+    pub documentation: Vec<DocumentationItem>
 }
 
-pub fn read_from_file<P: AsRef<Path>>(path: P) -> Result<(), Box<dyn Error>> {
+pub type DocumentationMap = HashMap<String, Arc<RwLock<Vec<DocumentationItem>>>>;
+
+pub fn read_from_file<P: AsRef<Path>>(path: P) -> Result<DocumentationMap, Box<dyn Error>> {
     // Open the file in read-only mode with buffer.
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
 
-    let v: Documentation = serde_json::from_reader(reader).unwrap();
+    let docs: Documentation = serde_json::from_reader(reader).unwrap();
+    let mut documentation = DocumentationMap::new();
+    for item in docs.documentation {
+        let key = item.name.clone().to_lowercase();
+        if !documentation.contains_key(&key) {
+            documentation.insert(key, Arc::new(RwLock::new(vec![item])));
+        } else {
+            documentation.get(&key).unwrap().write().unwrap().push(item);
+        }
+    }
 
-    eprintln!("{:?}", v);
-
-    Ok(())
+    Ok(documentation)
 }

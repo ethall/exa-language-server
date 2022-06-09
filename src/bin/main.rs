@@ -2,18 +2,19 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, RwLock};
 
-use exa_language_server::documentation::read_from_file;
 use lsp_server::{Connection, Message, Notification, Request, RequestId, Response};
 use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{
     DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument,
 };
+use lsp_types::request::HoverRequest;
 use lsp_types::{
-    InitializedParams, Position, ServerCapabilities, TextDocumentSyncCapability,
-    TextDocumentSyncKind, Url,
+    Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent, Position,
+    Range, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
 };
 
 use exa_language_server::document::Document;
+use exa_language_server::documentation::{read_from_file, DocumentationMap};
 use exa_language_server::request::ReadDocumentation;
 use tree_sitter::{InputEdit, Point};
 
@@ -29,6 +30,7 @@ fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
         //     resolve_provider: Some(true),
         //     ..CompletionOptions::default()
         // }),
+        hover_provider: Some(HoverProviderCapability::Simple(true)),
         // Default is None for all fields.
         ..ServerCapabilities::default()
     })
@@ -47,6 +49,7 @@ fn handle_messages(
     init_params: serde_json::Value,
 ) -> Result<(), Box<dyn Error + Sync + Send>> {
     let mut documents: HashMap<Url, Arc<RwLock<Document>>> = HashMap::new();
+    let mut documentation: DocumentationMap = HashMap::new();
     let _init_params: InitializedParams = serde_json::from_value(init_params).unwrap();
     for msg in &connection.receiver {
         eprintln!("received message: {:?}", msg);
@@ -65,12 +68,82 @@ fn handle_messages(
                         );
                         let url = Url::parse(params.uri.as_str()).unwrap();
                         let path = url.to_file_path().unwrap();
-                        read_from_file(path).unwrap();
+                        documentation = read_from_file(path).unwrap();
+
                         connection
                             .sender
                             .send(Message::Response(Response {
                                 id,
                                 result: Some(serde_json::Value::String(String::from("blah"))),
+                                error: None,
+                            }))
+                            .unwrap();
+                        continue;
+                    }
+                    Err(request) => request,
+                };
+                let request = match extract_request::<HoverRequest>(request) {
+                    Ok((id, params)) => {
+                        let document = documents
+                            .get(&params.text_document_position_params.text_document.uri)
+                            .unwrap()
+                            .read()
+                            .unwrap();
+                        let point =
+                            position_to_point(&params.text_document_position_params.position);
+                        let node = document
+                            .tree
+                            .root_node()
+                            .named_descendant_for_point_range(point, point)
+                            .unwrap();
+                        eprintln!("{:?}", node.to_sexp());
+                        let kind = node.kind();
+
+                        // Reply with nothing if there's nothing to display.
+                        if !documentation.contains_key(kind) {
+                            connection
+                                .sender
+                                .send(Message::Response(Response {
+                                    id,
+                                    result: Some(serde_json::to_value("").unwrap()),
+                                    error: None,
+                                }))
+                                .unwrap();
+                            continue;
+                        }
+
+                        // Get all DocumentationItems for this Node kind.
+                        let documentation_items = documentation
+                            .get(&String::from(kind))
+                            .unwrap()
+                            .read()
+                            .unwrap();
+
+                        // Pick a DocumentationItem to display.
+                        let documentation_text = if documentation_items.len() == 1 {
+                            documentation_items[0].description.clone()
+                        } else {
+                            // TODO: figure out which document item to display.
+                            documentation_items[0].description.clone()
+                        };
+
+                        // Construct the result field of the Response.
+                        let hover = Hover {
+                            contents: HoverContents::Markup(MarkupContent {
+                                kind: lsp_types::MarkupKind::Markdown,
+                                value: documentation_text,
+                            }),
+                            range: Some(Range {
+                                start: point_to_position(&node.start_position()),
+                                end: point_to_position(&node.end_position()),
+                            }),
+                        };
+                        // Send it.
+                        connection
+                            .sender
+                            .send(Message::Response(Response {
+                                id,
+                                result: Some(serde_json::to_value(&hover).unwrap()),
                                 error: None,
                             }))
                             .unwrap();
@@ -86,7 +159,6 @@ fn handle_messages(
             }
             Message::Notification(notification) => {
                 eprintln!("handling as a Notification");
-                // TODO: this is probably a mess of ownership transfers.
                 let notification = match extract_notification::<DidOpenTextDocument>(notification) {
                     Ok(params) => {
                         eprintln!("DidOpenTextDocumentParams -> {:?}", params);
@@ -228,5 +300,12 @@ fn position_to_point(position: &Position) -> Point {
     return Point {
         row: position.line.try_into().unwrap(),
         column: position.character.try_into().unwrap(),
+    };
+}
+
+fn point_to_position(point: &Point) -> Position {
+    return Position {
+        line: point.row.try_into().unwrap(),
+        character: point.column.try_into().unwrap(),
     };
 }
