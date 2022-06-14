@@ -16,8 +16,8 @@ pub struct DocumentationItem {
 impl DocumentationItem {
     pub fn new(name: String, description: String, operands: Option<&[String]>) -> Self {
         return Self {
-            name: name.to_string(),
-            description: description.to_string(),
+            name,
+            description,
             operands: match operands {
                 Some(ops) => Some(ops.to_vec()),
                 None => None,
