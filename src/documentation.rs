@@ -12,10 +12,15 @@ pub struct DocumentationItem {
     pub name: String,
     pub key: Option<String>,
     pub description: String,
-    pub operands: Option<Vec<String>>
+    pub operands: Option<Vec<String>>,
 }
 impl DocumentationItem {
-    pub fn new(name: String, key: Option<String>, description: String, operands: Option<&[String]>) -> Self {
+    pub fn new(
+        name: String,
+        key: Option<String>,
+        description: String,
+        operands: Option<&[String]>,
+    ) -> Self {
         return Self {
             name,
             key,
@@ -23,14 +28,14 @@ impl DocumentationItem {
             operands: match operands {
                 Some(ops) => Some(ops.to_vec()),
                 None => None,
-            }
-        }
+            },
+        };
     }
 }
 
 #[derive(Debug, Deserialize)]
 struct Documentation {
-    pub documentation: Vec<DocumentationItem>
+    pub documentation: Vec<DocumentationItem>,
 }
 
 pub type DocumentationMap = HashMap<String, Arc<RwLock<Vec<DocumentationItem>>>>;
