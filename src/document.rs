@@ -25,7 +25,6 @@ impl Document {
     }
 
     pub fn resolve_documentation(
-        &mut self,
         documentation: DocumentationMap,
         node: Node,
     ) -> Option<String> {

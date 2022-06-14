@@ -98,7 +98,7 @@ fn handle_messages(
                             .unwrap();
                         eprintln!("{:?}", node.to_sexp());
 
-                        match document.resolve_documentation(documentation, node) {
+                        match Document::resolve_documentation(documentation.clone(), node) {
                             Some(result) => {
                                 // Construct the result field of the Response.
                                 let hover = Hover {
