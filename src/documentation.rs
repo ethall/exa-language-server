@@ -10,13 +10,15 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct DocumentationItem {
     pub name: String,
+    pub key: Option<String>,
     pub description: String,
     pub operands: Option<Vec<String>>
 }
 impl DocumentationItem {
-    pub fn new(name: String, description: String, operands: Option<&[String]>) -> Self {
+    pub fn new(name: String, key: Option<String>, description: String, operands: Option<&[String]>) -> Self {
         return Self {
             name,
+            key,
             description,
             operands: match operands {
                 Some(ops) => Some(ops.to_vec()),
