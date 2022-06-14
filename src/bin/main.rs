@@ -97,56 +97,42 @@ fn handle_messages(
                             .named_descendant_for_point_range(point, point)
                             .unwrap();
                         eprintln!("{:?}", node.to_sexp());
-                        let kind = node.kind();
 
-                        // Reply with nothing if there's nothing to display.
-                        if !documentation.contains_key(kind) {
-                            connection
-                                .sender
-                                .send(Message::Response(Response {
-                                    id,
-                                    result: Some(serde_json::to_value("").unwrap()),
-                                    error: None,
-                                }))
-                                .unwrap();
-                            continue;
+                        match document.resolve_documentation(documentation, node) {
+                            Some(result) => {
+                                // Construct the result field of the Response.
+                                let hover = Hover {
+                                    contents: HoverContents::Markup(MarkupContent {
+                                        kind: lsp_types::MarkupKind::Markdown,
+                                        value: result,
+                                    }),
+                                    range: Some(Range {
+                                        start: point_to_position(&node.start_position()),
+                                        end: point_to_position(&node.end_position()),
+                                    }),
+                                };
+                                // Send it.
+                                connection
+                                    .sender
+                                    .send(Message::Response(Response {
+                                        id,
+                                        result: Some(serde_json::to_value(&hover).unwrap()),
+                                        error: None,
+                                    }))
+                                    .unwrap();
+                            },
+                            None => {
+                                // Send nothing.
+                                connection
+                                    .sender
+                                    .send(Message::Response(Response {
+                                        id,
+                                        result: Some(serde_json::to_value("").unwrap()),
+                                        error: None,
+                                    }))
+                                    .unwrap();
+                            },
                         }
-
-                        // Get all DocumentationItems for this Node kind.
-                        let documentation_items = documentation
-                            .get(&String::from(kind))
-                            .unwrap()
-                            .read()
-                            .unwrap();
-
-                        // Pick a DocumentationItem to display.
-                        let documentation_text = if documentation_items.len() == 1 {
-                            documentation_items[0].description.clone()
-                        } else {
-                            // TODO: figure out which document item to display.
-                            documentation_items[0].description.clone()
-                        };
-
-                        // Construct the result field of the Response.
-                        let hover = Hover {
-                            contents: HoverContents::Markup(MarkupContent {
-                                kind: lsp_types::MarkupKind::Markdown,
-                                value: documentation_text,
-                            }),
-                            range: Some(Range {
-                                start: point_to_position(&node.start_position()),
-                                end: point_to_position(&node.end_position()),
-                            }),
-                        };
-                        // Send it.
-                        connection
-                            .sender
-                            .send(Message::Response(Response {
-                                id,
-                                result: Some(serde_json::to_value(&hover).unwrap()),
-                                error: None,
-                            }))
-                            .unwrap();
                         continue;
                     }
                     Err(request) => request,
