@@ -98,6 +98,7 @@ fn handle_messages(
                             .unwrap();
                         eprintln!("{:?}", node.to_sexp());
 
+                        // FIXME: This clones the entire documentation and ought to be done more efficiently.
                         match Document::resolve_documentation(documentation.clone(), node) {
                             Some(result) => {
                                 // Construct the result field of the Response.
