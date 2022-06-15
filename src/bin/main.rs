@@ -121,7 +121,7 @@ fn handle_messages(
                                         error: None,
                                     }))
                                     .unwrap();
-                            },
+                            }
                             None => {
                                 // Send nothing.
                                 connection
@@ -132,7 +132,7 @@ fn handle_messages(
                                         error: None,
                                     }))
                                     .unwrap();
-                            },
+                            }
                         }
                         continue;
                     }
