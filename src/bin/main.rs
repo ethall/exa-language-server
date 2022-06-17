@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, RwLock};
 
-use lsp_server::{Connection, Message, Notification, Request, RequestId, Response};
+use lsp_server::{Connection, Message, Notification, Request, RequestId};
 use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{
     DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument,
@@ -17,6 +17,7 @@ use exa_language_server::document::Document;
 use exa_language_server::documentation::{read_from_file, DocumentationMap};
 use exa_language_server::request::ReadDocumentation;
 use tree_sitter::{InputEdit, Point};
+use exa_language_server::response::{empty_response, make_response};
 
 fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     eprintln!("starting EXA LSP server");
@@ -72,11 +73,7 @@ fn handle_messages(
 
                         connection
                             .sender
-                            .send(Message::Response(Response {
-                                id,
-                                result: Some(serde_json::Value::String(String::from("blah"))),
-                                error: None,
-                            }))
+                            .send(make_response(id, "ReadDocumentation OK"))
                             .unwrap();
                         continue;
                     }
@@ -113,25 +110,11 @@ fn handle_messages(
                                     }),
                                 };
                                 // Send it.
-                                connection
-                                    .sender
-                                    .send(Message::Response(Response {
-                                        id,
-                                        result: Some(serde_json::to_value(&hover).unwrap()),
-                                        error: None,
-                                    }))
-                                    .unwrap();
+                                connection.sender.send(make_response(id, hover)).unwrap();
                             }
                             None => {
                                 // Send nothing.
-                                connection
-                                    .sender
-                                    .send(Message::Response(Response {
-                                        id,
-                                        result: Some(serde_json::to_value("").unwrap()),
-                                        error: None,
-                                    }))
-                                    .unwrap();
+                                connection.sender.send(empty_response(id)).unwrap();
                             }
                         }
                         continue;
