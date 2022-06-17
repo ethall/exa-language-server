@@ -2,6 +2,10 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, RwLock};
 
+use exa_language_server::document::Document;
+use exa_language_server::documentation::{read_from_file, DocumentationMap};
+use exa_language_server::request::ReadDocumentation;
+use exa_language_server::response::{empty_response, make_response};
 use lsp_server::{Connection, Message, Notification, Request, RequestId};
 use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{
@@ -12,12 +16,7 @@ use lsp_types::{
     Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent, Position,
     Range, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
 };
-
-use exa_language_server::document::Document;
-use exa_language_server::documentation::{read_from_file, DocumentationMap};
-use exa_language_server::request::ReadDocumentation;
 use tree_sitter::{InputEdit, Point};
-use exa_language_server::response::{empty_response, make_response};
 
 fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     eprintln!("starting EXA LSP server");
