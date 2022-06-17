@@ -94,9 +94,51 @@ fn handle_messages(
                             .unwrap();
                         eprintln!("{:?}", node.to_sexp());
 
+                        // Only display hover when the cursor is within the own text of this node.
+                        // Excludes text of child nodes.
+                        //  ❌ TEST X | = T
+                        //  ✅ TE|ST X = T
+                        let start_point = node.start_position();
+                        let end_text_point = if node.child_count() == 0 {
+                            node.end_position()
+                        } else {
+                            let child_start_byte = node.child(0).unwrap().start_byte();
+                            let own_text = String::from_utf8(
+                                document.text.as_bytes()[node.start_byte()..child_start_byte]
+                                    .to_vec(),
+                            )
+                            .unwrap();
+                            position_to_point(
+                                &FullTextDocument::new(
+                                    document.uri.clone(),
+                                    String::from("exalang"),
+                                    document.version,
+                                    document.text.clone(),
+                                )
+                                .position_at(
+                                    (node.start_byte()
+                                        + own_text.split_whitespace().next().unwrap().len()
+                                        - 1)
+                                    .try_into()
+                                    .unwrap(),
+                                ),
+                            )
+                        };
+                        if !is_position_within_range(
+                            &params.text_document_position_params.position,
+                            &Range {
+                                start: point_to_position(&start_point),
+                                end: point_to_position(&end_text_point),
+                            },
+                        ) {
+                            connection.sender.send(empty_response(id)).unwrap();
+                            continue;
+                        }
+
                         // FIXME: This clones the entire documentation and ought to be done more efficiently.
                         match Document::resolve_documentation(documentation.clone(), node) {
                             Some(result) => {
+                                let end_position = point_to_position(&end_text_point);
                                 // Construct the result field of the Response.
                                 let hover = Hover {
                                     contents: HoverContents::Markup(MarkupContent {
@@ -104,8 +146,13 @@ fn handle_messages(
                                         value: result,
                                     }),
                                     range: Some(Range {
-                                        start: point_to_position(&node.start_position()),
-                                        end: point_to_position(&node.end_position()),
+                                        start: point_to_position(&start_point),
+                                        // The end of the highlighted Range must be 1 character longer than
+                                        // our trigger Range.
+                                        end: Position {
+                                            line: end_position.line,
+                                            character: end_position.character + 1,
+                                        },
                                     }),
                                 };
                                 // Send it.
@@ -277,4 +324,11 @@ fn point_to_position(point: &Point) -> Position {
         line: point.row.try_into().unwrap(),
         character: point.column.try_into().unwrap(),
     };
+}
+
+fn is_position_within_range(position: &Position, range: &lsp_types::Range) -> bool {
+    return position.line >= range.start.line
+        && position.character >= range.start.character
+        && position.line <= range.end.line
+        && position.character <= range.end.character;
 }
