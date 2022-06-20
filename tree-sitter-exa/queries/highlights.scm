@@ -1,6 +1,5 @@
 (exa
-    (_) @function
-    !comment)
+    (_) @function)
 
 ; REGISTERS
 ;----------
