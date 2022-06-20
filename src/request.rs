@@ -11,5 +11,5 @@ impl Request for ReadDocumentation {
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize, Serialize)]
 pub struct ReadDocumentationParams {
-    pub uri: String
+    pub uri: String,
 }

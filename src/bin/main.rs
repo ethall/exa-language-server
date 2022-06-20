@@ -2,21 +2,25 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::sync::{Arc, RwLock};
 
-use lsp_server::{Connection, Message, Notification, Request, RequestId, Response};
+use exa_language_server::document::Document;
+use exa_language_server::documentation::{read_from_file, DocumentationMap};
+use exa_language_server::location::{
+    is_position_within_positionrange, pointrange_to_positionrange, position_to_point,
+};
+use exa_language_server::node::get_own_text_pointrange;
+use exa_language_server::request::ReadDocumentation;
+use exa_language_server::response::{empty_response, make_response};
+use lsp_server::{Connection, Message, Notification, Request, RequestId};
 use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{
     DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument,
 };
 use lsp_types::request::HoverRequest;
 use lsp_types::{
-    Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent, Position,
-    Range, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
+    Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent,
+    ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
 };
-
-use exa_language_server::document::Document;
-use exa_language_server::documentation::{read_from_file, DocumentationMap};
-use exa_language_server::request::ReadDocumentation;
-use tree_sitter::{InputEdit, Point};
+use tree_sitter::InputEdit;
 
 fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     eprintln!("starting EXA LSP server");
@@ -72,11 +76,7 @@ fn handle_messages(
 
                         connection
                             .sender
-                            .send(Message::Response(Response {
-                                id,
-                                result: Some(serde_json::Value::String(String::from("blah"))),
-                                error: None,
-                            }))
+                            .send(make_response(id, "ReadDocumentation OK"))
                             .unwrap();
                         continue;
                     }
@@ -96,57 +96,42 @@ fn handle_messages(
                             .root_node()
                             .named_descendant_for_point_range(point, point)
                             .unwrap();
+                        eprintln!("{:?}", point);
                         eprintln!("{:?}", node.to_sexp());
-                        let kind = node.kind();
 
-                        // Reply with nothing if there's nothing to display.
-                        if !documentation.contains_key(kind) {
-                            connection
-                                .sender
-                                .send(Message::Response(Response {
-                                    id,
-                                    result: Some(serde_json::to_value("").unwrap()),
-                                    error: None,
-                                }))
-                                .unwrap();
+                        // Only display hover when the cursor is within the own text of this node.
+                        // Excludes text of child nodes.
+                        //  ❌ TEST X | = T
+                        //  ✅ TE|ST X = T
+                        let text_positionrange =
+                            pointrange_to_positionrange(&get_own_text_pointrange(&node, &document));
+                        if !is_position_within_positionrange(
+                            &params.text_document_position_params.position,
+                            &text_positionrange,
+                        ) {
+                            connection.sender.send(empty_response(id)).unwrap();
                             continue;
                         }
 
-                        // Get all DocumentationItems for this Node kind.
-                        let documentation_items = documentation
-                            .get(&String::from(kind))
-                            .unwrap()
-                            .read()
-                            .unwrap();
-
-                        // Pick a DocumentationItem to display.
-                        let documentation_text = if documentation_items.len() == 1 {
-                            documentation_items[0].description.clone()
-                        } else {
-                            // TODO: figure out which document item to display.
-                            documentation_items[0].description.clone()
-                        };
-
-                        // Construct the result field of the Response.
-                        let hover = Hover {
-                            contents: HoverContents::Markup(MarkupContent {
-                                kind: lsp_types::MarkupKind::Markdown,
-                                value: documentation_text,
-                            }),
-                            range: Some(Range {
-                                start: point_to_position(&node.start_position()),
-                                end: point_to_position(&node.end_position()),
-                            }),
-                        };
-                        // Send it.
-                        connection
-                            .sender
-                            .send(Message::Response(Response {
-                                id,
-                                result: Some(serde_json::to_value(&hover).unwrap()),
-                                error: None,
-                            }))
-                            .unwrap();
+                        // FIXME: This clones the entire documentation and ought to be done more efficiently.
+                        match Document::resolve_documentation(documentation.clone(), node) {
+                            Some(result) => {
+                                // Construct the result field of the Response.
+                                let hover = Hover {
+                                    contents: HoverContents::Markup(MarkupContent {
+                                        kind: lsp_types::MarkupKind::Markdown,
+                                        value: result,
+                                    }),
+                                    range: Some(text_positionrange),
+                                };
+                                // Send it.
+                                connection.sender.send(make_response(id, hover)).unwrap();
+                            }
+                            None => {
+                                // Send nothing.
+                                connection.sender.send(empty_response(id)).unwrap();
+                            }
+                        }
                         continue;
                     }
                     Err(request) => request,
@@ -294,18 +279,4 @@ where
     N::Params: serde::de::DeserializeOwned,
 {
     notification.extract(N::METHOD)
-}
-
-fn position_to_point(position: &Position) -> Point {
-    return Point {
-        row: position.line.try_into().unwrap(),
-        column: position.character.try_into().unwrap(),
-    };
-}
-
-fn point_to_position(point: &Point) -> Position {
-    return Position {
-        line: point.row.try_into().unwrap(),
-        character: point.column.try_into().unwrap(),
-    };
 }
