@@ -4,6 +4,9 @@ use std::sync::{Arc, RwLock};
 
 use exa_language_server::document::Document;
 use exa_language_server::documentation::{read_from_file, DocumentationMap};
+use exa_language_server::location::{
+    is_position_within_positionrange, point_to_position, position_to_point,
+};
 use exa_language_server::request::ReadDocumentation;
 use exa_language_server::response::{empty_response, make_response};
 use lsp_server::{Connection, Message, Notification, Request, RequestId};
@@ -16,7 +19,7 @@ use lsp_types::{
     Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent, Position,
     Range, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
 };
-use tree_sitter::{InputEdit, Point};
+use tree_sitter::InputEdit;
 
 fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     eprintln!("starting EXA LSP server");
@@ -128,7 +131,7 @@ fn handle_messages(
                             "{{ start_point: {:?}, end_text_point: {:?}}}",
                             start_point, end_text_point
                         );
-                        if !is_position_within_range(
+                        if !is_position_within_positionrange(
                             &params.text_document_position_params.position,
                             &Range {
                                 start: point_to_position(&start_point),
@@ -314,26 +317,4 @@ where
     N::Params: serde::de::DeserializeOwned,
 {
     notification.extract(N::METHOD)
-}
-
-fn position_to_point(position: &Position) -> Point {
-    return Point {
-        row: position.line.try_into().unwrap(),
-        column: position.character.try_into().unwrap(),
-    };
-}
-
-fn point_to_position(point: &Point) -> Position {
-    return Position {
-        line: point.row.try_into().unwrap(),
-        character: point.column.try_into().unwrap(),
-    };
-}
-
-fn is_position_within_range(position: &Position, range: &lsp_types::Range) -> bool {
-    return position.line >= range.start.line
-        && position.character >= range.start.character
-        // lsp_types::Range.end is exclusive to the character but not the line.
-        && position.line <= range.end.line
-        && position.character < range.end.character;
 }
