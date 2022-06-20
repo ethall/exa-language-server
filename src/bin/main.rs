@@ -5,8 +5,9 @@ use std::sync::{Arc, RwLock};
 use exa_language_server::document::Document;
 use exa_language_server::documentation::{read_from_file, DocumentationMap};
 use exa_language_server::location::{
-    is_position_within_positionrange, point_to_position, position_to_point,
+    is_position_within_positionrange, pointrange_to_positionrange, position_to_point,
 };
+use exa_language_server::node::get_own_text_pointrange;
 use exa_language_server::request::ReadDocumentation;
 use exa_language_server::response::{empty_response, make_response};
 use lsp_server::{Connection, Message, Notification, Request, RequestId};
@@ -16,8 +17,8 @@ use lsp_types::notification::{
 };
 use lsp_types::request::HoverRequest;
 use lsp_types::{
-    Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent, Position,
-    Range, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
+    Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent,
+    ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
 };
 use tree_sitter::InputEdit;
 
@@ -102,41 +103,11 @@ fn handle_messages(
                         // Excludes text of child nodes.
                         //  ❌ TEST X | = T
                         //  ✅ TE|ST X = T
-                        let start_point = node.start_position();
-                        let end_text_point = if node.child_count() == 0 {
-                            node.end_position()
-                        } else {
-                            let child_start_byte = node.child(0).unwrap().start_byte();
-                            let own_text = String::from_utf8(
-                                document.text.as_bytes()[node.start_byte()..child_start_byte]
-                                    .to_vec(),
-                            )
-                            .unwrap();
-                            position_to_point(
-                                &FullTextDocument::new(
-                                    document.uri.clone(),
-                                    String::from("exalang"),
-                                    document.version,
-                                    document.text.clone(),
-                                )
-                                .position_at(
-                                    (node.start_byte()
-                                        + own_text.split_whitespace().next().unwrap().len())
-                                    .try_into()
-                                    .unwrap(),
-                                ),
-                            )
-                        };
-                        eprintln!(
-                            "{{ start_point: {:?}, end_text_point: {:?}}}",
-                            start_point, end_text_point
-                        );
+                        let text_positionrange =
+                            pointrange_to_positionrange(&get_own_text_pointrange(&node, &document));
                         if !is_position_within_positionrange(
                             &params.text_document_position_params.position,
-                            &Range {
-                                start: point_to_position(&start_point),
-                                end: point_to_position(&end_text_point),
-                            },
+                            &text_positionrange,
                         ) {
                             connection.sender.send(empty_response(id)).unwrap();
                             continue;
@@ -145,22 +116,13 @@ fn handle_messages(
                         // FIXME: This clones the entire documentation and ought to be done more efficiently.
                         match Document::resolve_documentation(documentation.clone(), node) {
                             Some(result) => {
-                                let end_position = point_to_position(&end_text_point);
                                 // Construct the result field of the Response.
                                 let hover = Hover {
                                     contents: HoverContents::Markup(MarkupContent {
                                         kind: lsp_types::MarkupKind::Markdown,
                                         value: result,
                                     }),
-                                    range: Some(Range {
-                                        start: point_to_position(&start_point),
-                                        // The end of the highlighted Range must be 1 character longer than
-                                        // our trigger Range.
-                                        end: Position {
-                                            line: end_position.line,
-                                            character: end_position.character,
-                                        },
-                                    }),
+                                    range: Some(text_positionrange),
                                 };
                                 // Send it.
                                 connection.sender.send(make_response(id, hover)).unwrap();

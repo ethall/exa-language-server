@@ -16,6 +16,13 @@ pub fn point_to_position(point: &Point) -> Position {
     };
 }
 
+pub fn pointrange_to_positionrange(pointrange: &tree_sitter::Range) -> lsp_types::Range {
+    return lsp_types::Range {
+        start: point_to_position(&pointrange.start_point),
+        end: point_to_position(&pointrange.end_point),
+    };
+}
+
 pub fn position_to_point(position: &Position) -> Point {
     return Point {
         row: position.line.try_into().unwrap(),
