@@ -1,5 +1,5 @@
 use lsp_types::Url;
-use tree_sitter::{Parser, Tree, Node};
+use tree_sitter::{Node, Parser, Tree};
 
 use crate::documentation::DocumentationMap;
 
@@ -24,10 +24,7 @@ impl Document {
         }
     }
 
-    pub fn resolve_documentation(
-        documentation: DocumentationMap,
-        node: Node,
-    ) -> Option<String> {
+    pub fn resolve_documentation(documentation: DocumentationMap, node: Node) -> Option<String> {
         let kind = node.kind();
 
         if !documentation.contains_key(kind) {
