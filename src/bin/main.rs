@@ -92,6 +92,7 @@ fn handle_messages(
                             .root_node()
                             .named_descendant_for_point_range(point, point)
                             .unwrap();
+                        eprintln!("{:?}", point);
                         eprintln!("{:?}", node.to_sexp());
 
                         // Only display hover when the cursor is within the own text of this node.
@@ -117,13 +118,16 @@ fn handle_messages(
                                 )
                                 .position_at(
                                     (node.start_byte()
-                                        + own_text.split_whitespace().next().unwrap().len()
-                                        - 1)
+                                        + own_text.split_whitespace().next().unwrap().len())
                                     .try_into()
                                     .unwrap(),
                                 ),
                             )
                         };
+                        eprintln!(
+                            "{{ start_point: {:?}, end_text_point: {:?}}}",
+                            start_point, end_text_point
+                        );
                         if !is_position_within_range(
                             &params.text_document_position_params.position,
                             &Range {
@@ -151,7 +155,7 @@ fn handle_messages(
                                         // our trigger Range.
                                         end: Position {
                                             line: end_position.line,
-                                            character: end_position.character + 1,
+                                            character: end_position.character,
                                         },
                                     }),
                                 };
@@ -329,6 +333,7 @@ fn point_to_position(point: &Point) -> Position {
 fn is_position_within_range(position: &Position, range: &lsp_types::Range) -> bool {
     return position.line >= range.start.line
         && position.character >= range.start.character
+        // lsp_types::Range.end is exclusive to the character but not the line.
         && position.line <= range.end.line
-        && position.character <= range.end.character;
+        && position.character < range.end.character;
 }
