@@ -1,10 +1,11 @@
 use lsp_types::Url;
 use tree_sitter::{Node, Parser, Tree};
 
-use crate::documentation::DocumentationMap;
+use crate::{documentation::DocumentationMap, highlight::ExaHighlighter};
 
 pub struct Document {
     pub uri: Url,
+    pub highlighter: ExaHighlighter,
     pub parser: Parser,
     pub text: String,
     pub tree: Tree,
@@ -17,6 +18,7 @@ impl Document {
         let tree = parser.parse(text.clone(), None).unwrap();
         Self {
             uri,
+            highlighter: ExaHighlighter::new(),
             parser,
             text,
             tree,

@@ -1,10 +1,11 @@
-use tree_sitter_highlight::HighlightConfiguration;
+use tree_sitter_highlight::{HighlightConfiguration, HighlightEvent, Highlighter};
 
-pub struct ExaHighlight {
+pub struct ExaHighlighter {
     pub config: HighlightConfiguration,
+    highlighter: Highlighter,
     pub names: Vec<String>,
 }
-impl ExaHighlight {
+impl ExaHighlighter {
     pub fn new() -> Self {
         let names = &[
             "comment",
@@ -25,7 +26,29 @@ impl ExaHighlight {
         config.configure(names);
         Self {
             config,
+            highlighter: Highlighter::new(),
             names: Vec::from_iter(names.iter().map(|s| s.to_string())),
+        }
+    }
+
+    pub fn highlight(&mut self, source: String) {
+        let highlights = self
+            .highlighter
+            .highlight(&self.config, source.as_bytes(), None, |_| None)
+            .unwrap();
+
+        for event in highlights {
+            match event.unwrap() {
+                HighlightEvent::Source { start, end } => {
+                    eprintln!("source: {}-{}", start, end);
+                }
+                HighlightEvent::HighlightStart(s) => {
+                    eprintln!("highlight style started: {:?}", s);
+                }
+                HighlightEvent::HighlightEnd => {
+                    eprintln!("highlight style ended");
+                }
+            }
         }
     }
 }

@@ -245,14 +245,16 @@ fn handle_messages(
                         eprintln!("DidSaveTextDocument -> {:?}", params);
                         if documents.contains_key(&params.text_document.uri) {
                             let document = documents.get(&params.text_document.uri).unwrap();
+                            let text = document.read().unwrap().text.clone();
                             eprintln!(
                                 "we think the document looks like:\n{:?}",
-                                document.read().unwrap().text
+                                text
                             );
                             eprintln!(
                                 "and has an AST like:\n{:?}",
                                 document.read().unwrap().tree.root_node().to_sexp()
                             );
+                            document.write().unwrap().highlighter.highlight(text);
                         }
                         continue;
                     }
