@@ -1,7 +1,9 @@
-use lsp_types::Url;
-use tree_sitter::{Node, Parser, Tree};
+use lsp_types::{Position, TextDocumentContentChangeEvent, Url};
+use tree_sitter::{InputEdit, Node, Parser, Tree};
 
-use crate::{documentation::DocumentationMap, highlight::ExaHighlighter};
+use crate::{
+    documentation::DocumentationMap, highlight::ExaHighlighter, location::position_to_point,
+};
 
 pub struct Document {
     pub uri: Url,
@@ -24,6 +26,25 @@ impl Document {
             tree,
             version,
         }
+    }
+
+    /// Convert (character) offset to byte offset. Always assumes UTF-8 encoding.
+    pub fn from_char_to_byte_offset(
+        &self,
+        start_char_offset: usize,
+        end_char_offset: usize,
+    ) -> (usize, usize) {
+        todo!()
+    }
+
+    /// (Character) offset at the given [Position].
+    pub fn offset_at(&self, position: lsp_types::Position) -> usize {
+        todo!()
+    }
+
+    /// [Position] at the given (character) offset.
+    pub fn position_at(&self, offset: usize) -> Position {
+        todo!()
     }
 
     pub fn resolve_documentation(documentation: DocumentationMap, node: Node) -> Option<String> {
@@ -67,9 +88,51 @@ impl Document {
             .map(|item| item.description.clone())
     }
 
-    pub fn update_and_reparse(&mut self, version: i64, text: String) {
+    pub fn update(&mut self, changes: Vec<TextDocumentContentChangeEvent>, version: i64) {
+        for change_event in changes {
+            let range = change_event.range.unwrap();
+            let start_offset = self.offset_at(range.start);
+            let end_offset = self.offset_at(range.end);
+            let (start_byte, old_end_byte) =
+                self.from_char_to_byte_offset(start_offset, end_offset);
+            todo!("apply this TextDocumentContentChangeEvent (change_event) to the `ropey` buffer");
+            let new_end_byte = start_byte
+                + change_event
+                    .text
+                    .chars()
+                    .fold(0, |acc, c| acc + c.len_utf8());
+            let new_end_position = self.position_at(new_end_byte.try_into().unwrap());
+            /*
+             *                  8
+             *          fn test(|) {}
+             *
+             *          fn test(a: u32|) {}
+             *                        14
+             * Change:
+             *  text: "a: u32"
+             *    length: 6
+             *  range:
+             *    start:
+             *      line: 0
+             *      character: 8
+             *    end:
+             *      line: 0
+             *      character: 8
+             *  range_len: 0
+             */
+            let input_edit = InputEdit {
+                start_byte,
+                old_end_byte,
+                new_end_byte,
+                start_position: position_to_point(&range.start),
+                old_end_position: position_to_point(&range.end),
+                new_end_position: position_to_point(&new_end_position),
+            };
+            self.tree.edit(&input_edit);
+        }
+        // Finalize update.
         self.version = version;
-        self.text = text.clone();
+        self.text = todo!("update text content from `ropey` buffer");
         self.tree = self
             .parser
             .parse(self.text.clone(), Some(&self.tree))
