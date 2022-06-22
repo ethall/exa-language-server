@@ -1,5 +1,32 @@
-(exa
-    (_) @function)
+[
+    (copy)
+    (addi)
+    (subi)
+    (muli)
+    (divi)
+    (modi)
+    (swiz)
+    (mark)
+    (jump)
+    (tjmp)
+    (fjmp)
+    (test)
+    (repl)
+    (halt)
+    (kill)
+    (link)
+    (host)
+    (mode)
+    (void)
+    (make)
+    (grab)
+    (file)
+    (seek)
+    (drop)
+    (wipe)
+    (noop)
+    (rand)
+] @function
 
 ; REGISTERS
 ;----------
