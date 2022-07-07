@@ -34,7 +34,23 @@ impl Document {
         start_char_offset: usize,
         end_char_offset: usize,
     ) -> (usize, usize) {
-        todo!()
+        let mut start_byte_offset: usize = 0;
+        let mut end_byte_offset: usize = 0;
+        for (i, c) in self.text.chars().enumerate() {
+            if i > end_char_offset {
+                break;
+            }
+
+            let mut b: &mut [u8] = &mut [0; 4];
+            let byte_size = c.encode_utf8(b).len();
+
+            if i < start_char_offset {
+                start_byte_offset += byte_size;
+            }
+
+            end_byte_offset += byte_size;
+        }
+        (start_byte_offset, end_byte_offset)
     }
 
     /// (Character) offset at the given [Position].
@@ -61,7 +77,10 @@ impl Document {
             line_num += 1;
             offset -= line.len() + 1; // include the \n that we split on
         }
-        Position { line: line_num, character: offset as u32 }
+        Position {
+            line: line_num,
+            character: offset as u32,
+        }
     }
 
     pub fn resolve_documentation(documentation: DocumentationMap, node: Node) -> Option<String> {
@@ -159,18 +178,18 @@ impl Document {
 
 #[cfg(test)]
 mod test {
-    use std::path::Path;
     use lsp_types::{Position, Url};
+    use std::path::Path;
 
     use super::Document;
 
     fn make_doc() -> Document {
         //For linux/macos/*bsd/etc...
-        #[cfg(not(target_os="windows"))]
+        #[cfg(not(target_os = "windows"))]
         let path: &Path = Path::new("/example.txt");
 
         // For windows and their wacky directory structure...
-        #[cfg(target_os="windows")]
+        #[cfg(target_os = "windows")]
         let path: &Path = Path::new("C:\\example.txt");
 
         Document::new(
@@ -219,5 +238,30 @@ works as it should."#,
         assert_eq!(doc.offset_at(doc.position_at(1)), 1);
         assert_eq!(doc.offset_at(doc.position_at(38)), 38);
         assert_eq!(doc.offset_at(doc.position_at(65)), 65);
+    }
+
+    fn make_char_v_byte_doc() -> Document {
+        //For linux/macos/*bsd/etc...
+        #[cfg(not(target_os = "windows"))]
+        let path: &Path = Path::new("/example.txt");
+
+        // For windows and their wacky directory structure...
+        #[cfg(target_os = "windows")]
+        let path: &Path = Path::new("C:\\example.txt");
+
+        Document::new(
+            Url::from_directory_path(path).unwrap(),
+            2,
+            // Line lengths (including newlines) [(chars, bytes)]: (7, 8), (21, 11), (11, 11), (7, 8)
+            String::from("This 📃\njust makes sure that\ne\u{0300}v\u{0300}erything\nworks ✅"),
+        )
+    }
+
+    #[test]
+    fn char_to_byte_offset_works() {
+        let doc = make_char_v_byte_doc();
+        assert_eq!(doc.from_char_to_byte_offset(5, 6), (5, 10));
+        assert_eq!(doc.from_char_to_byte_offset(29, 30), (32, 35));
+        assert_eq!(doc.from_char_to_byte_offset(0, 46), (0, 52));
     }
 }
