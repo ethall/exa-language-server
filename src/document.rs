@@ -52,7 +52,16 @@ impl Document {
 
     /// [Position] at the given (character) offset.
     pub fn position_at(&self, offset: usize) -> Position {
-        todo!()
+        let mut line_num: u32 = 0;
+        let mut offset = offset;
+        for line in self.text.split("\n").collect::<Vec<&str>>() {
+            if (offset as isize - ((line.len() as isize) + 1)) < 0 {
+                break;
+            }
+            line_num += 1;
+            offset -= line.len() + 1; // include the \n that we split on
+        }
+        Position { line: line_num, character: offset as u32 }
     }
 
     pub fn resolve_documentation(documentation: DocumentationMap, node: Node) -> Option<String> {
@@ -190,4 +199,16 @@ works as it should."#,
         }
     }
 
+    #[test]
+    fn position_at_works() {
+        let pos_offset_pairs: Vec<(Position, usize)> = vec![
+            (Position::new(0, 0), 0),
+            (Position::new(2, 3), 38),  // 14 + 21 + 3 = 38
+            (Position::new(3, 19), 65), // 14 + 21 + 11 + 19 = 65
+        ];
+
+        for (expected, offset) in pos_offset_pairs {
+            assert_eq!(make_doc().position_at(offset), expected);
+        }
+    }
 }
