@@ -39,7 +39,15 @@ impl Document {
 
     /// (Character) offset at the given [Position].
     pub fn offset_at(&self, position: lsp_types::Position) -> usize {
-        todo!()
+        let mut doc_lines: Vec<&str> = self.text.split("\n").collect();
+        doc_lines.truncate(position.line as usize);
+        let mut accum: usize = 0;
+        for line in doc_lines {
+            accum += line.len() + 1; //add in the \n we split on
+        }
+        accum += position.character as usize;
+
+        accum
     }
 
     /// [Position] at the given (character) offset.
@@ -138,4 +146,48 @@ impl Document {
             .parse(self.text.clone(), Some(&self.tree))
             .unwrap();
     }
+}
+
+#[cfg(test)]
+mod test {
+    use std::path::Path;
+    use lsp_types::{Position, Url};
+
+    use super::Document;
+
+    fn make_doc() -> Document {
+        //For linux/macos/*bsd/etc...
+        #[cfg(not(target_os="windows"))]
+        let path: &Path = Path::new("/example.txt");
+
+        // For windows and their wacky directory structure...
+        #[cfg(target_os="windows")]
+        let path: &Path = Path::new("C:\\example.txt");
+
+        Document::new(
+            Url::from_directory_path(path).unwrap(),
+            2,
+            // Line lengths (including newlines): 14, 21, 11, 19
+            String::from(
+                r#"This document
+just makes sure that
+everything
+works as it should."#,
+            ),
+        )
+    }
+
+    #[test]
+    fn offset_at_works() {
+        let pos_offset_pairs: Vec<(Position, usize)> = vec![
+            (Position::new(0, 0), 0),
+            (Position::new(2, 3), 38),  // 14 + 21 + 3 = 38
+            (Position::new(3, 19), 65), // 14 + 21 + 11 + 19 = 65
+        ];
+
+        for (pos, expected) in pos_offset_pairs {
+            assert_eq!(make_doc().offset_at(pos), expected);
+        }
+    }
+
 }
