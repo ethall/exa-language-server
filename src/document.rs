@@ -211,4 +211,13 @@ works as it should."#,
             assert_eq!(make_doc().position_at(offset), expected);
         }
     }
+
+    #[test]
+    fn offset_at_and_position_at_are_reciprocol() {
+        let doc = make_doc();
+        assert_eq!(doc.offset_at(doc.position_at(8)), 8);
+        assert_eq!(doc.offset_at(doc.position_at(1)), 1);
+        assert_eq!(doc.offset_at(doc.position_at(38)), 38);
+        assert_eq!(doc.offset_at(doc.position_at(65)), 65);
+    }
 }
