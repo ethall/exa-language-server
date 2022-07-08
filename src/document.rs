@@ -1,4 +1,5 @@
 use lsp_types::{Position, TextDocumentContentChangeEvent, Url};
+use ropey::Rope;
 use tree_sitter::{InputEdit, Node, Parser, Tree};
 
 use crate::{
@@ -12,6 +13,7 @@ pub struct Document {
     pub text: String,
     pub tree: Tree,
     pub version: i64,
+    buffer: Rope,
 }
 impl Document {
     pub fn new(uri: Url, version: i64, text: String) -> Self {
@@ -22,9 +24,10 @@ impl Document {
             uri,
             highlighter: ExaHighlighter::new(),
             parser,
-            text,
+            text: text.clone(),
             tree,
             version,
+            buffer: Rope::from_str(text.as_str()),
         }
     }
 
@@ -55,15 +58,18 @@ impl Document {
 
     /// (Character) offset at the given [Position].
     pub fn offset_at(&self, position: lsp_types::Position) -> usize {
-        let mut doc_lines: Vec<&str> = self.text.split("\n").collect();
-        doc_lines.truncate(position.line as usize);
-        let mut accum: usize = 0;
-        for line in doc_lines {
-            accum += line.len() + 1; //add in the \n we split on
+        let pos_line: usize = position.line as usize;
+        if pos_line + 1 > self.buffer.len_lines() {
+            return self.buffer.len_chars();
         }
-        accum += position.character as usize;
-
-        accum
+        let line_char_offset = self.buffer.line_to_char(pos_line);
+        let next_line_char_offset = if pos_line + 1 < self.buffer.len_lines() {
+            self.buffer.line_to_char(pos_line + 1)
+        } else {
+            self.buffer.len_chars()
+        };
+        ((line_char_offset + (position.character as usize)).min(next_line_char_offset))
+            .max(line_char_offset)
     }
 
     /// [Position] at the given (character) offset.
@@ -178,83 +184,147 @@ impl Document {
 
 #[cfg(test)]
 mod test {
+    use lsp_text_document::FullTextDocument;
     use lsp_types::{Position, Url};
     use std::path::Path;
 
     use super::Document;
 
-    fn make_doc() -> Document {
+    // ⚠ WARNING ⚠ changing this value means you need to recalculate the expected values below!
+    /// 65 characters, 65 bytes \
+    /// Character offsets at the start of each line: `[0, 14, 35, 46]`
+    /// ```text
+    /// "This document\n" ---------- 14 chars, 14 bytes
+    /// "just makes sure that\n" --- 21 chars, 21 bytes
+    /// "everything\n" ------------- 11 chars, 11 bytes
+    /// "works as it should." ------ 19 chars, 19 bytes
+    /// ```
+    static DOCTEXT1: &str = "This document\njust makes sure that\neverything\nworks as it should.";
+    // ⚠ WARNING ⚠ changing this value means you need to recalculate the expected values below!
+    /// 47 characters, 56 bytes \
+    /// Character offsets at the start of each line: `[0, 7, 28, 41]`
+    /// ```text
+    ///  1c -|--|
+    ///  4b -|--|
+    /// "This 📃\n" ----------------------- 07 chars, 10 bytes
+    ///
+    ///           |--------|- Thin Space
+    ///           |   1c   |
+    ///           |   3b   |
+    /// "just makes\u{2009}sure that\n" --- 21 chars, 23 bytes
+    ///           ||      ||         ||
+    ///           10b     13b        23b
+    ///           10c     11c        21c
+    ///
+    ///  |--------|- Combining Grave Accent
+    ///  |        |    |-|- Latin Small Letter I with Grave
+    ///  |   1c   |    |-|- 1c
+    ///  |   2b   |    |-|- 2b
+    /// "e\u{0300}verythìng\n" ------------ 12 chars, 14 bytes
+    ///          ||    ||
+    ///          3b    9b
+    ///          2c    8c
+    ///
+    ///   1c -|--|
+    ///   3b -|--|
+    /// "works ✅" ------------------------- 07 chars, 09 bytes
+    /// ```
+    static DOCTEXT2: &str = "This 📃\njust makes\u{2009}sure that\ne\u{0300}verythìng\nworks ✅";
+
+    fn make_test_oracle(doc: &Document) -> FullTextDocument {
+        FullTextDocument::new(
+            doc.uri.clone(),
+            String::from("exalang"),
+            doc.version.clone(),
+            doc.text.clone(),
+        )
+    }
+
+    fn make_doc(text: &str) -> Document {
         //For linux/macos/*bsd/etc...
         #[cfg(not(target_os = "windows"))]
-        let path: &Path = Path::new("/example.txt");
+        let path: &Path = Path::new("/this-file-does-not-exist.txt");
 
         // For windows and their wacky directory structure...
         #[cfg(target_os = "windows")]
-        let path: &Path = Path::new("C:\\example.txt");
+        let path: &Path = Path::new("C:\\this-file-does-not-exist.txt");
 
         Document::new(
             Url::from_directory_path(path).unwrap(),
-            2,
-            // Line lengths (including newlines): 14, 21, 11, 19
-            String::from(
-                r#"This document
-just makes sure that
-everything
-works as it should."#,
-            ),
+            rand::random(),
+            String::from(text),
         )
     }
 
     #[test]
     fn offset_at_works() {
-        let pos_offset_pairs: Vec<(Position, usize)> = vec![
-            (Position::new(0, 0), 0),
-            (Position::new(2, 3), 38),  // 14 + 21 + 3 = 38
-            (Position::new(3, 19), 65), // 14 + 21 + 11 + 19 = 65
+        let cases: Vec<Position> = vec![
+            Position::new(0, 0),
+            Position::new(2, 3),
+            Position::new(3, 18), // last line character for DOCTEXT1
+            Position::new(3, 19),
+            Position::new(3, 6), // last line character for DOCTEXT2
+            Position::new(3, 7),
+            Position::new(4, 0),
+            Position::new(3, 99),
+            Position::new(99, 0),
         ];
 
-        for (pos, expected) in pos_offset_pairs {
-            assert_eq!(make_doc().offset_at(pos), expected);
+        let doc1 = make_doc(DOCTEXT1);
+        let expected1: Vec<usize> = vec![0, 38, 64, 65, 52, 53, 65, 65];
+
+        let doc2 = make_doc(DOCTEXT2);
+        let expected2: Vec<usize> = vec![0, 31, 47, 47, 46, 47, 47, 47];
+
+        for (pos, expected) in cases.iter().zip(expected1.iter()) {
+            let actual = doc1.offset_at(*pos);
+            assert_eq!(
+                actual, *expected,
+                "Calculated offset {} from {:?} in DOCTEXT1; expected {}",
+                actual, *pos, *expected
+            );
+        }
+
+        for (pos, expected) in cases.iter().zip(expected2.iter()) {
+            let actual = doc2.offset_at(*pos);
+            assert_eq!(
+                actual, *expected,
+                "Calculated offset {} from {:?} in DOCTEXT2; expected {}",
+                actual, *pos, *expected
+            );
         }
     }
 
     #[test]
     fn position_at_works() {
-        let pos_offset_pairs: Vec<(Position, usize)> = vec![
-            (Position::new(0, 0), 0),
-            (Position::new(2, 3), 38),  // 14 + 21 + 3 = 38
-            (Position::new(3, 19), 65), // 14 + 21 + 11 + 19 = 65
+        let doc1 = make_doc(DOCTEXT1);
+        let mut oracle1 = make_test_oracle(&doc1);
+
+        let pos_offset_pairs: Vec<Position> = vec![
+            Position::new(0, 0),
+            Position::new(2, 3),
+            Position::new(3, 19),
         ];
 
-        for (expected, offset) in pos_offset_pairs {
-            assert_eq!(make_doc().position_at(offset), expected);
+        for pos in pos_offset_pairs {
+            assert_eq!(doc1.offset_at(pos), oracle1.offset_at(pos));
         }
     }
 
     #[test]
     fn offset_at_and_position_at_are_reciprocol() {
-        let doc = make_doc();
-        assert_eq!(doc.offset_at(doc.position_at(8)), 8);
-        assert_eq!(doc.offset_at(doc.position_at(1)), 1);
-        assert_eq!(doc.offset_at(doc.position_at(38)), 38);
-        assert_eq!(doc.offset_at(doc.position_at(65)), 65);
-    }
+        let doc = make_doc(DOCTEXT1);
+        let mut oracle = make_test_oracle(&doc);
 
-    fn make_char_v_byte_doc() -> Document {
-        //For linux/macos/*bsd/etc...
-        #[cfg(not(target_os = "windows"))]
-        let path: &Path = Path::new("/example.txt");
+        let offsets: Vec<usize> = vec![8, 1, 38, 65];
 
-        // For windows and their wacky directory structure...
-        #[cfg(target_os = "windows")]
-        let path: &Path = Path::new("C:\\example.txt");
-
-        Document::new(
-            Url::from_directory_path(path).unwrap(),
-            2,
-            // Line lengths (including newlines) [(chars, bytes)]: (7, 8), (21, 11), (11, 11), (7, 8)
-            String::from("This 📃\njust makes sure that\ne\u{0300}v\u{0300}erything\nworks ✅"),
-        )
+        for offset in offsets {
+            let expect_position = oracle.position_at(offset.try_into().unwrap());
+            assert_eq!(
+                doc.offset_at(doc.position_at(offset.clone())),
+                oracle.offset_at(expect_position)
+            );
+        }
     }
 
     #[test]
