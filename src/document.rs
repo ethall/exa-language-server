@@ -202,7 +202,7 @@ mod test {
     static DOCTEXT1: &str = "This document\njust makes sure that\neverything\nworks as it should.";
     // ⚠ WARNING ⚠ changing this value means you need to recalculate the expected values below!
     /// 47 characters, 56 bytes \
-    /// Character offsets at the start of each line: `[0, 7, 28, 41]`
+    /// Character offsets at the start of each line: `[0, 7, 28, 40]`
     /// ```text
     ///  1c -|--|
     ///  4b -|--|
