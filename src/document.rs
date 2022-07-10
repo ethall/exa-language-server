@@ -37,23 +37,10 @@ impl Document {
         start_char_offset: usize,
         end_char_offset: usize,
     ) -> (usize, usize) {
-        let mut start_byte_offset: usize = 0;
-        let mut end_byte_offset: usize = 0;
-        for (i, c) in self.text.chars().enumerate() {
-            if i > end_char_offset {
-                break;
-            }
-
-            let mut b: &mut [u8] = &mut [0; 4];
-            let byte_size = c.encode_utf8(b).len();
-
-            if i < start_char_offset {
-                start_byte_offset += byte_size;
-            }
-
-            end_byte_offset += byte_size;
-        }
-        (start_byte_offset, end_byte_offset)
+        (
+            self.buffer.char_to_byte(start_char_offset),
+            self.buffer.char_to_byte(end_char_offset),
+        )
     }
 
     /// (Character) offset at the given [Position].
@@ -365,9 +352,36 @@ mod test {
 
     #[test]
     fn char_to_byte_offset_works() {
-        let doc = make_char_v_byte_doc();
-        assert_eq!(doc.from_char_to_byte_offset(5, 6), (5, 10));
-        assert_eq!(doc.from_char_to_byte_offset(29, 30), (32, 35));
-        assert_eq!(doc.from_char_to_byte_offset(0, 46), (0, 52));
+        // All cases are character offsets from DOCTEXT2.
+        let cases: Vec<(usize, usize)> = vec![
+            (0, 0), // ""
+            (5, 6), // "📃"
+            (12, 22), // "makes\u{2009}sure"
+            (28, 28), // ""
+            (28, 40), // "e\u{0300}verythìng\n"
+            (46, 47), // "✅"
+            (0, 47), // all text
+        ];
+
+        let doc2 = make_doc(DOCTEXT2);
+        let expected2: Vec<(usize, usize)> = vec![
+            (0, 0),
+            (5, 9),
+            (15, 27),
+            (33, 33),
+            (33, 47),
+            (53, 56),
+            (0, 56),
+        ];
+
+        for (case_tuple, expected_tuple) in cases.iter().zip(expected2.iter()) {
+            let (case_start, case_end) = *case_tuple;
+            let actual = doc2.from_char_to_byte_offset(case_start, case_end);
+            assert_eq!(
+                actual, *expected_tuple,
+                "Calculated {:?} from {:?} in DOCTEXT2; expected {:?}",
+                actual, *case_tuple, *expected_tuple
+            );
+        }
     }
 }
