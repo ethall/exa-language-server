@@ -141,7 +141,8 @@ impl Document {
             let end_offset = self.offset_at(range.end);
             let (start_byte, old_end_byte) =
                 self.from_char_to_byte_offset(start_offset, end_offset);
-            todo!("apply this TextDocumentContentChangeEvent (change_event) to the `ropey` buffer");
+            self.buffer.remove(start_offset..end_offset);
+            self.buffer.insert(start_offset, change_event.text.as_str());
             let new_end_byte = start_byte
                 + change_event
                     .text
@@ -178,7 +179,7 @@ impl Document {
         }
         // Finalize update.
         self.version = version;
-        self.text = todo!("update text content from `ropey` buffer");
+        self.text = self.buffer.to_string();
         self.tree = self
             .parser
             .parse(self.text.clone(), Some(&self.tree))
