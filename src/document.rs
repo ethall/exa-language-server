@@ -46,17 +46,31 @@ impl Document {
     /// (Character) offset at the given [Position].
     pub fn offset_at(&self, position: lsp_types::Position) -> usize {
         let pos_line: usize = position.line as usize;
-        if pos_line + 1 > self.buffer.len_lines() {
+
+        /*
+        Clamp offset to the total number of characters if the given line
+        position is greater than the number of available lines.
+
+        The line position is zero-indexed but the value returned from
+        `len_lines` is not, so this is equivalent to
+            pos_line + 1 > self.buffer.len_lines()
+        */
+        if pos_line >= self.buffer.len_lines() {
             return self.buffer.len_chars();
         }
+
         let line_char_offset = self.buffer.line_to_char(pos_line);
-        let next_line_char_offset = if pos_line + 1 < self.buffer.len_lines() {
-            self.buffer.line_to_char(pos_line + 1)
-        } else {
+        let next_line_char_offset = if pos_line >= self.buffer.len_lines() {
+            // Clamp to the total number of characters.
             self.buffer.len_chars()
+        } else {
+            // Safe to get the character offset of the next line.
+            self.buffer.line_to_char(pos_line + 1)
         };
-        ((line_char_offset + (position.character as usize)).min(next_line_char_offset))
-            .max(line_char_offset)
+
+        // Return the character offset of the next line if the given character
+        // position exceeds the line length.
+        (line_char_offset + (position.character as usize)).min(next_line_char_offset)
     }
 
     /// [Position] at the given (character) offset.
@@ -64,12 +78,14 @@ impl Document {
         let clamped_offset = offset.clamp(0, self.buffer.len_chars());
 
         if self.buffer.len_lines() == 1 {
+            // Values within Position are zero-based.
             return Position {
                 line: 0,
                 character: clamped_offset as u32,
             };
         }
 
+        // We've already clamped the offset, so this is safe.
         let line = self.buffer.char_to_line(clamped_offset);
         Position {
             line: line as u32,
