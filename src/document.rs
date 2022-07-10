@@ -233,6 +233,18 @@ mod test {
     /// "works ✅" ------------------------- 07 chars, 09 bytes
     /// ```
     static DOCTEXT2: &str = "This 📃\njust makes\u{2009}sure that\ne\u{0300}verythìng\nworks ✅";
+    // ⚠ WARNING ⚠ changing this value means you need to recalculate the expected values below!
+    /// 40 characters, 42 bytes
+    /// ```text
+    ///                                     |-|- Katakana Letter Tu
+    ///                             1c -|--||-|- 1c
+    ///                             1b -|--||-|- 3b
+    /// "A document with a single line. ¯\\_(ツ)_/¯"
+    ///                                     ||
+    ///                                     36b
+    ///                                     36c
+    /// ```
+    static DOCTEST3: &str = "A document with a single line. ¯\\_(ツ)_/¯";
 
     fn make_doc(text: &str) -> Document {
         //For linux/macos/*bsd/etc...
@@ -254,6 +266,8 @@ mod test {
     fn offset_at_works() {
         let cases: Vec<Position> = vec![
             Position::new(0, 0),
+            Position::new(0, 39), // last line character for DOCTEXT3
+            Position::new(0, 40),
             Position::new(2, 3),
             Position::new(3, 18), // last line character for DOCTEXT1
             Position::new(3, 19),
@@ -265,11 +279,15 @@ mod test {
         ];
 
         let doc1 = make_doc(DOCTEXT1);
-        let expected1: Vec<usize> = vec![0, 38, 64, 65, 52, 53, 65, 65];
+        let expected1: Vec<usize> = vec![0, 14, 14, 38, 64, 65, 52, 53, 65, 65];
 
         let doc2 = make_doc(DOCTEXT2);
-        let expected2: Vec<usize> = vec![0, 31, 47, 47, 46, 47, 47, 47];
+        let expected2: Vec<usize> = vec![0, 7, 7, 31, 47, 47, 46, 47, 47, 47];
 
+        let doc3 = make_doc(DOCTEST3);
+        let expected3: Vec<usize> = vec![0, 39, 40, 40, 40, 40, 40, 40, 40, 40];
+
+        // DOCTEXT1
         for (pos, expected) in cases.iter().zip(expected1.iter()) {
             let actual = doc1.offset_at(*pos);
             assert_eq!(
@@ -279,11 +297,22 @@ mod test {
             );
         }
 
+        // DOCTEXT2
         for (pos, expected) in cases.iter().zip(expected2.iter()) {
             let actual = doc2.offset_at(*pos);
             assert_eq!(
                 actual, *expected,
                 "Calculated offset {} from {:?} in DOCTEXT2; expected {}",
+                actual, *pos, *expected
+            );
+        }
+
+        // DOCTEXT3
+        for (pos, expected) in cases.iter().zip(expected3.iter()) {
+            let actual = doc3.offset_at(*pos);
+            assert_eq!(
+                actual, *expected,
+                "Calculated offset {} from {:?} in DOCTEXT3; expected {}",
                 actual, *pos, *expected
             );
         }
@@ -319,6 +348,20 @@ mod test {
             Position::new(3, 7),
         ];
 
+        let doc3 = make_doc(DOCTEST3);
+        let expected3: Vec<Position> = vec![
+            Position::new(0, 0),
+            Position::new(0, 31),
+            Position::new(0, 38),
+            Position::new(0, 40),
+            Position::new(0, 40),
+            Position::new(0, 40),
+            Position::new(0, 40),
+            Position::new(0, 40),
+            Position::new(0, 40),
+        ];
+
+        // DOCTEXT1
         for (offset, expected) in cases.iter().zip(expected1.iter()) {
             let actual = doc1.position_at(*offset);
             assert_eq!(
@@ -328,11 +371,22 @@ mod test {
             );
         }
 
+        // DOCTEXT2
         for (offset, expected) in cases.iter().zip(expected2.iter()) {
             let actual = doc2.position_at(*offset);
             assert_eq!(
                 actual, *expected,
                 "Calculated {:?} from {} in DOCTEXT2; expected {:?}",
+                actual, *offset, *expected
+            );
+        }
+
+        // DOCTEXT3
+        for (offset, expected) in cases.iter().zip(expected3.iter()) {
+            let actual = doc3.position_at(*offset);
+            assert_eq!(
+                actual, *expected,
+                "Calculated {:?} from {} in DOCTEXT3; expected {:?}",
                 actual, *offset, *expected
             );
         }
@@ -344,15 +398,32 @@ mod test {
 
         let doc1 = make_doc(DOCTEXT1);
         let doc2 = make_doc(DOCTEXT2);
+        let doc3 = make_doc(DOCTEST3);
 
         for offset in cases {
             let actual1 = doc1.offset_at(doc1.position_at(offset));
             let expected1 = offset.clamp(0, doc1.buffer.len_chars());
-            assert_eq!(actual1, expected1, "Calculated {} from {} in DOCTEXT1; expected {}", actual1, offset, expected1);
+            assert_eq!(
+                actual1, expected1,
+                "Calculated {} from {} in DOCTEXT1; expected {}",
+                actual1, offset, expected1
+            );
 
             let actual2 = doc2.offset_at(doc2.position_at(offset));
             let expected2 = offset.clamp(0, doc2.buffer.len_chars());
-            assert_eq!(actual2, expected2, "Calculated {} from {} in DOCTEXT2; expected {}", actual2, offset, expected2);
+            assert_eq!(
+                actual2, expected2,
+                "Calculated {} from {} in DOCTEXT2; expected {}",
+                actual2, offset, expected2
+            );
+
+            let actual3 = doc3.offset_at(doc3.position_at(offset));
+            let expected3 = offset.clamp(0, doc3.buffer.len_chars());
+            assert_eq!(
+                actual3, expected3,
+                "Calculated {} from {} in DOCTEXT3; expected {}",
+                actual3, offset, expected3
+            );
         }
     }
 
