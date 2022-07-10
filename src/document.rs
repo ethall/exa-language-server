@@ -431,13 +431,13 @@ mod test {
     fn char_to_byte_offset_works() {
         // All cases are character offsets from DOCTEXT2.
         let cases: Vec<(usize, usize)> = vec![
-            (0, 0), // ""
-            (5, 6), // "📃"
+            (0, 0),   // ""
+            (5, 6),   // "📃"
             (12, 22), // "makes\u{2009}sure"
             (28, 28), // ""
             (28, 40), // "e\u{0300}verythìng\n"
             (46, 47), // "✅"
-            (0, 47), // all text
+            (0, 47),  // all text
         ];
 
         let doc2 = make_doc(DOCTEXT2);
