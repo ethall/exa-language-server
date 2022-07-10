@@ -346,18 +346,20 @@ mod test {
     }
 
     #[test]
-    fn offset_at_and_position_at_are_reciprocol() {
-        let doc = make_doc(DOCTEXT1);
-        let mut oracle = make_test_oracle(&doc);
+    fn offset_at_and_position_at_are_reciprocal() {
+        let cases: Vec<usize> = vec![0, 31, 38, 46, 47, 52, 53, 64, 65];
 
-        let offsets: Vec<usize> = vec![8, 1, 38, 65];
+        let doc1 = make_doc(DOCTEXT1);
+        let doc2 = make_doc(DOCTEXT2);
 
-        for offset in offsets {
-            let expect_position = oracle.position_at(offset.try_into().unwrap());
-            assert_eq!(
-                doc.offset_at(doc.position_at(offset.clone())),
-                oracle.offset_at(expect_position)
-            );
+        for offset in cases {
+            let actual1 = doc1.offset_at(doc1.position_at(offset));
+            let expected1 = offset.clamp(0, doc1.buffer.len_chars());
+            assert_eq!(actual1, expected1, "Calculated {} from {} in DOCTEXT1; expected {}", actual1, offset, expected1);
+
+            let actual2 = doc2.offset_at(doc2.position_at(offset));
+            let expected2 = offset.clamp(0, doc2.buffer.len_chars());
+            assert_eq!(actual2, expected2, "Calculated {} from {} in DOCTEXT2; expected {}", actual2, offset, expected2);
         }
     }
 
