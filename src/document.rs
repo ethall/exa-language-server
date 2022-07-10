@@ -74,18 +74,19 @@ impl Document {
 
     /// [Position] at the given (character) offset.
     pub fn position_at(&self, offset: usize) -> Position {
-        let mut line_num: u32 = 0;
-        let mut offset = offset;
-        for line in self.text.split("\n").collect::<Vec<&str>>() {
-            if (offset as isize - ((line.len() as isize) + 1)) < 0 {
-                break;
-            }
-            line_num += 1;
-            offset -= line.len() + 1; // include the \n that we split on
+        let clamped_offset = offset.clamp(0, self.buffer.len_chars());
+
+        if self.buffer.len_lines() == 1 {
+            return Position {
+                line: 0,
+                character: clamped_offset as u32,
+            };
         }
+
+        let line = self.buffer.char_to_line(clamped_offset);
         Position {
-            line: line_num,
-            character: offset as u32,
+            line: line as u32,
+            character: (clamped_offset - self.buffer.line_to_char(line)) as u32,
         }
     }
 
@@ -297,17 +298,50 @@ mod test {
 
     #[test]
     fn position_at_works() {
-        let doc1 = make_doc(DOCTEXT1);
-        let mut oracle1 = make_test_oracle(&doc1);
+        let cases: Vec<usize> = vec![0, 31, 38, 46, 47, 52, 53, 64, 65];
 
-        let pos_offset_pairs: Vec<Position> = vec![
+        let doc1 = make_doc(DOCTEXT1);
+        let expected1: Vec<Position> = vec![
             Position::new(0, 0),
+            Position::new(1, 17),
             Position::new(2, 3),
+            Position::new(3, 0),
+            Position::new(3, 1),
+            Position::new(3, 6),
+            Position::new(3, 7),
+            Position::new(3, 18),
             Position::new(3, 19),
         ];
 
-        for pos in pos_offset_pairs {
-            assert_eq!(doc1.offset_at(pos), oracle1.offset_at(pos));
+        let doc2 = make_doc(DOCTEXT2);
+        let expected2: Vec<Position> = vec![
+            Position::new(0, 0),
+            Position::new(2, 3),
+            Position::new(2, 10),
+            Position::new(3, 6),
+            Position::new(3, 7),
+            Position::new(3, 7),
+            Position::new(3, 7),
+            Position::new(3, 7),
+            Position::new(3, 7),
+        ];
+
+        for (offset, expected) in cases.iter().zip(expected1.iter()) {
+            let actual = doc1.position_at(*offset);
+            assert_eq!(
+                actual, *expected,
+                "Calculated {:?} from {} in DOCTEXT1; expected {:?}",
+                actual, *offset, *expected
+            );
+        }
+
+        for (offset, expected) in cases.iter().zip(expected2.iter()) {
+            let actual = doc2.position_at(*offset);
+            assert_eq!(
+                actual, *expected,
+                "Calculated {:?} from {} in DOCTEXT2; expected {:?}",
+                actual, *offset, *expected
+            );
         }
     }
 
