@@ -169,7 +169,6 @@ name = "exa-language-server"
 version = "0.1.0"
 dependencies = [
  "lsp-server",
- "lsp-text-document",
  "lsp-types",
  "rand",
  "ropey",
@@ -308,15 +307,6 @@ dependencies = [
  "log",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "lsp-text-document"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "339c9ae1d20020935ea9a75ea5e9e81489bf7986ba41d44163bf7e8273edcbb5"
-dependencies = [
- "lsp-types",
 ]
 
 [[package]]

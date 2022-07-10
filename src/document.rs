@@ -172,7 +172,6 @@ impl Document {
 
 #[cfg(test)]
 mod test {
-    use lsp_text_document::FullTextDocument;
     use lsp_types::{Position, Url};
     use std::path::Path;
 
@@ -218,15 +217,6 @@ mod test {
     /// "works ✅" ------------------------- 07 chars, 09 bytes
     /// ```
     static DOCTEXT2: &str = "This 📃\njust makes\u{2009}sure that\ne\u{0300}verythìng\nworks ✅";
-
-    fn make_test_oracle(doc: &Document) -> FullTextDocument {
-        FullTextDocument::new(
-            doc.uri.clone(),
-            String::from("exalang"),
-            doc.version.clone(),
-            doc.text.clone(),
-        )
-    }
 
     fn make_doc(text: &str) -> Document {
         //For linux/macos/*bsd/etc...
