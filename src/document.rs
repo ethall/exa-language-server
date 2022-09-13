@@ -93,8 +93,8 @@ impl Document {
         }
     }
 
-    /// Resolve the [`DocumentationItem`](crate::documentation::DocumentationItem)
-    /// as a [`String`] for the given [`Node`].
+    /// Resolve a [`DocumentationItem`](crate::documentation::DocumentationItem) description for
+    /// the given [`Node`].
     pub fn resolve_documentation(documentation: DocumentationMap, node: Node) -> Option<String> {
         let kind = node.kind();
 
