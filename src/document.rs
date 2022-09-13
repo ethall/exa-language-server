@@ -103,7 +103,7 @@ impl Document {
         }
 
         let documentation_items = documentation
-            .get(&String::from(kind))
+            .get(kind)
             .unwrap()
             .read()
             .unwrap();
