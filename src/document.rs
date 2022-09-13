@@ -243,7 +243,7 @@ mod test {
     ///                                     36b
     ///                                     36c
     /// ```
-    static DOCTEST3: &str = "A document with a single line. ¯\\_(ツ)_/¯";
+    static DOCTEXT3: &str = "A document with a single line. ¯\\_(ツ)_/¯";
 
     fn make_doc(text: &str) -> Document {
         //For linux/macos/*bsd/etc...
@@ -283,7 +283,7 @@ mod test {
         let doc2 = make_doc(DOCTEXT2);
         let expected2: Vec<usize> = vec![0, 7, 7, 31, 47, 47, 46, 47, 47, 47];
 
-        let doc3 = make_doc(DOCTEST3);
+        let doc3 = make_doc(DOCTEXT3);
         let expected3: Vec<usize> = vec![0, 39, 40, 40, 40, 40, 40, 40, 40, 40];
 
         // DOCTEXT1
@@ -347,7 +347,7 @@ mod test {
             Position::new(3, 7),
         ];
 
-        let doc3 = make_doc(DOCTEST3);
+        let doc3 = make_doc(DOCTEXT3);
         let expected3: Vec<Position> = vec![
             Position::new(0, 0),
             Position::new(0, 31),
@@ -397,7 +397,7 @@ mod test {
 
         let doc1 = make_doc(DOCTEXT1);
         let doc2 = make_doc(DOCTEXT2);
-        let doc3 = make_doc(DOCTEST3);
+        let doc3 = make_doc(DOCTEXT3);
 
         for offset in cases {
             let actual1 = doc1.offset_at(doc1.position_at(offset));
