@@ -102,11 +102,7 @@ impl Document {
             return None;
         }
 
-        let documentation_items = documentation
-            .get(kind)
-            .unwrap()
-            .read()
-            .unwrap();
+        let documentation_items = documentation.get(kind).unwrap().read().unwrap();
 
         if documentation_items.len() == 1 {
             return Some(documentation_items[0].description.clone());
