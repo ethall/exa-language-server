@@ -187,8 +187,13 @@ impl Document {
 
 #[cfg(test)]
 mod test {
-    use lsp_types::{Position, Url};
     use std::path::Path;
+    use std::sync::{Arc, RwLock};
+
+    use lsp_types::{Position, Url};
+    use tree_sitter::Point;
+
+    use crate::documentation::{DocumentationItem, DocumentationMap};
 
     use super::Document;
 
@@ -244,6 +249,24 @@ mod test {
     ///                                     36c
     /// ```
     static DOCTEXT3: &str = "A document with a single line. ¯\\_(ツ)_/¯";
+    // ⚠ WARNING ⚠ changing this value means you need to recalculate the expected values below!
+    /// MUST contain all registers and commands provided [`DocumentationItem`] by [`make_doc_map`].
+    ///
+    /// We're not testing the parser, so capitalization doesn't need to be randomized.
+    ///
+    /// The final NOP is added to prevent the formatter from making it a single line.
+    static DOCTEXT4: &str = concat!(
+        //||- Point { row: 0, column: 2 }
+        //||       ||- 0row,11col
+        "COPY -3141 M\n",
+        //||- 1row,2col
+        "TEST 1 = 1\n",
+        //||- 2row,2col
+        "TEST MRD\n",
+        //||- 3row,2col
+        "TEST EOF\n",
+        "NOP",
+    );
 
     fn make_doc(text: &str) -> Document {
         //For linux/macos/*bsd/etc...
@@ -259,6 +282,93 @@ mod test {
             rand::random(),
             String::from(text),
         )
+    }
+
+    /// Creates a [`DocumentationMap`] containing the following keys and their
+    fn make_doc_map() -> DocumentationMap {
+        // All keys are lowercase.
+        DocumentationMap::from([
+            (
+                String::from("m"),
+                Arc::new(RwLock::new(vec![DocumentationItem {
+                    name: String::from("M"),
+                    key: None,
+                    description: String::from(concat!(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor\n",
+                        "incididunt ut labore et dolore magna aliqua. Fermentum iaculis eu non diam\n",
+                        "phasellus. Cursus metus aliquam eleifend mi in. Arcu risus quis varius quam.\n",
+                        "Eget est lorem ipsum dolor sit amet.\n",
+                        "\n",
+                        "Fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate.\n",
+                        "Sollicitudin ac orci phasellus egestas. Urna nec tincidunt praesent semper\n",
+                        "feugiat nibh sed pulvinar proin. Duis ultricies lacus sed turpis tincidunt id\n",
+                        "aliquet risus. Amet commodo nulla facilisi nullam vehicula ipsum a. Aliquam\n",
+                        "id diam maecenas ultricies mi eget mauris.\n",
+                        "\n",
+                        "Id ornare arcu odio ut. Malesuada fames ac turpis egestas sed tempus urna et.\n",
+                        "Sodales ut etiam sit amet. Gravida rutrum quisque non tellus orci ac. Enim\n",
+                        "neque volutpat ac tincidunt vitae semper quis lectus nulla. Auctor neque\n",
+                        "vitae tempus quam pellentesque nec. Ornare aenean euismod elementum nisi.",
+                    )),
+                    operands: None,
+                }])),
+            ),
+            (
+                String::from("copy"),
+                Arc::new(RwLock::new(vec![DocumentationItem {
+                    name: String::from("COPY"),
+                    key: None,
+                    description: String::from(
+                        "Dis parturient montes nascetur ridiculus mus mauris."
+                    ),
+                    operands: Some(vec![
+                        String::from("Dolor morbi non arcu risus quis."),
+                        String::from("Id ornare arcu odio ut.")
+                    ])
+                }])),
+            ),
+            (
+                String::from("test"),
+                Arc::new(RwLock::new(vec![
+                    DocumentationItem {
+                        name: String::from("TEST"),
+                        key: Some(String::from("TEST-COMPARE")),
+                        description: String::from(concat!(
+                            "Facilisis magna etiam tempor orci. Faucibus ornare suspendisse sed nisi\n",
+                            "lacus. Felis donec et odio pellentesque diam volutpat commodo. In fermentum\n",
+                            "et sollicitudin ac orci. Id ornare arcu odio ut.",
+                        )),
+                        operands: Some(vec![
+                            String::from("Phasellus faucibus scelerisque eleifend donec."),
+                            String::from(""),
+                            String::from("Phasellus faucibus scelerisque eleifend donec."),
+                        ])
+                    },
+                    DocumentationItem {
+                        name: String::from("TEST"),
+                        key: Some(String::from("TEST-MESSAGE")),
+                        description: String::from(concat!(
+                            "Amet volutpat consequat mauris nunc. Et malesuada fames ac turpis. Tortor\n",
+                            "aliquam nulla facilisi cras fermentum odio eu.",
+                        )),
+                        operands: Some(vec![
+                            String::from("Sit amet nisl suscipit adipiscing."),
+                        ]),
+                    },
+                    DocumentationItem {
+                        name: String::from("TEST"),
+                        key: Some(String::from("TEST-FILE")),
+                        description: String::from(concat!(
+                            "Amet est placerat in egestas erat imperdiet sed euismod nisi. Sit amet nisl\n",
+                            "suscipit adipiscing.",
+                        )),
+                        operands: Some(vec![
+                            String::from("A cras semper auctor neque."),
+                        ]),
+                    }
+                ])),
+            )
+        ])
     }
 
     #[test]
@@ -457,6 +567,98 @@ mod test {
                 actual, *expected_tuple,
                 "Calculated {:?} from {:?} in DOCTEXT2; expected {:?}",
                 actual, *case_tuple, *expected_tuple
+            );
+        }
+    }
+
+    #[test]
+    fn resolve_documentation_works() {
+        let mut doc1 = make_doc(DOCTEXT4);
+        let doc_map = make_doc_map();
+
+        // Perform a manual parse.
+        doc1.tree = doc1
+            .parser
+            .parse(doc1.text.clone(), Some(&doc1.tree))
+            .unwrap();
+
+        struct DocumentationMapLookup {
+            pub name: String,
+            pub key: Option<String>,
+        }
+
+        // Vector of ([`DocumentationMapLookup`], [`Point`]) tuples.
+        //
+        // [`DocumentationMapLookup`] a struct containing everything needed to
+        // lookup the expected description in the [`DocumentationMap`].
+        //
+        // [`Point`] is the location of the [`Node`] we'll be extracting from
+        // the parse tree.
+        let lookups_and_points: Vec<(DocumentationMapLookup, Point)> = vec![
+            (
+                DocumentationMapLookup {
+                    name: String::from("copy"),
+                    key: None,
+                },
+                Point { row: 0, column: 2 },
+            ),
+            (
+                DocumentationMapLookup {
+                    name: String::from("m"),
+                    key: None,
+                },
+                Point { row: 0, column: 11 },
+            ),
+            (
+                DocumentationMapLookup {
+                    name: String::from("test"),
+                    key: Some(String::from("TEST-COMPARE")),
+                },
+                Point { row: 1, column: 2 },
+            ),
+            (
+                DocumentationMapLookup {
+                    name: String::from("test"),
+                    key: Some(String::from("TEST-MESSAGE")),
+                },
+                Point { row: 2, column: 2 },
+            ),
+            (
+                DocumentationMapLookup {
+                    name: String::from("test"),
+                    key: Some(String::from("TEST-FILE")),
+                },
+                Point { row: 3, column: 2 },
+            ),
+        ];
+
+        // Construct prerequisites and call Function-Under-Test.
+        for (lookup, point) in lookups_and_points {
+            let doc_items = doc_map.get(&lookup.name).unwrap().read().unwrap();
+            let expected = if doc_items.len() == 1 {
+                Some(doc_items[0].description.clone())
+            } else {
+                doc_items
+                    .iter()
+                    .find(|item| item.key == lookup.key)
+                    .map(|item| item.description.clone())
+            };
+
+            let node = doc1
+                .tree
+                .root_node()
+                .named_descendant_for_point_range(point, point)
+                .unwrap();
+
+            let actual = Document::resolve_documentation(doc_map.clone(), node);
+
+            assert_eq!(
+                actual,
+                expected,
+                "Resolved '{:?}' from '{:?}' in DOCTEXT2; expected '{:?}'",
+                actual,
+                node.to_sexp(),
+                expected
             );
         }
     }
