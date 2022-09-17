@@ -152,6 +152,8 @@ impl Document {
              *          fn test(|) {}
              *
              *          fn test(a: u32|) {}
+             *                        |- The cursor is shifted to the right
+             *                        |  by the text addition.
              *                        14
              * Change:
              *  text: "a: u32"
@@ -164,6 +166,30 @@ impl Document {
              *      line: 0
              *      character: 8
              *  range_len: 0
+             *
+             *                  8      14
+             *                  |------|- Highlighted text
+             *                  |      |  (before copy-pasting "z: char").
+             *          fn test(|a: u32|) {}
+             *
+             *          fn test(z: char) {}
+             * Change:
+             *  text: "z: char"
+             *    length: 7
+             *  range:
+             *    start:
+             *      line: 0
+             *      character: 8
+             *    end:
+             *      line: 0
+             *      character: 14
+             *  range_len: 6
+             *
+             * NOTES:
+             *  * The `range` is the Range of the text to overwrite with
+             *    the provided `text`.
+             *  * The `range.start` and `range.end` are indicative of the
+             *    highlighted text area BEFORE the change is made.
              */
             let input_edit = InputEdit {
                 start_byte,
