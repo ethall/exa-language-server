@@ -38,6 +38,7 @@ struct Documentation {
     pub documentation: Vec<DocumentationItem>,
 }
 
+/// No [`Vec<DocumentationItem>`] will ever have zero length. See [`read_from_file`].
 pub type DocumentationMap = HashMap<String, Arc<RwLock<Vec<DocumentationItem>>>>;
 
 pub fn read_from_file<P: AsRef<Path>>(path: P) -> Result<DocumentationMap, Box<dyn Error>> {

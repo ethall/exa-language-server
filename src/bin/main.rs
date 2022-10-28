@@ -11,7 +11,6 @@ use exa_language_server::node::get_own_text_pointrange;
 use exa_language_server::request::ReadDocumentation;
 use exa_language_server::response::{empty_response, make_response};
 use lsp_server::{Connection, Message, Notification, Request, RequestId};
-use lsp_text_document::FullTextDocument;
 use lsp_types::notification::{
     DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument,
 };
@@ -20,7 +19,6 @@ use lsp_types::{
     Hover, HoverContents, HoverProviderCapability, InitializedParams, MarkupContent,
     ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind, Url,
 };
-use tree_sitter::InputEdit;
 
 fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     eprintln!("starting EXA LSP server");
@@ -167,63 +165,11 @@ fn handle_messages(
                 {
                     Ok(params) => {
                         eprintln!("DidChangeTextDocument -> {:?}", params);
-                        //let document: &mut Document = documents.get(&params.text_document.uri).unwrap();
                         let document = documents.get(&params.text_document.uri).unwrap();
-                        let mut text_document = FullTextDocument::new(
-                            document.read().unwrap().uri.clone(),
-                            String::from("exalang"),
-                            document.read().unwrap().version,
-                            document.read().unwrap().text.clone(),
-                        );
-                        for change_event in params.content_changes {
-                            let range = change_event.range.unwrap();
-                            let start_offset = text_document.offset_at(range.start);
-                            let end_offset = text_document.offset_at(range.end);
-                            let (start_byte, old_end_byte) = text_document
-                                .transform_offset_to_byte_offset(start_offset, end_offset);
-                            text_document.update(
-                                vec![change_event.clone()],
-                                params.text_document.version.into(),
-                            );
-                            let new_end_byte = start_byte
-                                + change_event
-                                    .text
-                                    .chars()
-                                    .fold(0, |acc, c| acc + c.len_utf8());
-                            let new_end_position =
-                                text_document.position_at(new_end_byte.try_into().unwrap());
-                            /*
-                             *                  8
-                             *          fn test(|) {}
-                             *
-                             *          fn test(a: u32|) {}
-                             *                        14
-                             * Change:
-                             *  text: "a: u32"
-                             *    length: 6
-                             *  range:
-                             *    start:
-                             *      line: 0
-                             *      character: 8
-                             *    end:
-                             *      line: 0
-                             *      character: 8
-                             *  range_len: 0
-                             */
-                            let input_edit = InputEdit {
-                                start_byte,
-                                old_end_byte,
-                                new_end_byte,
-                                start_position: position_to_point(&range.start),
-                                old_end_position: position_to_point(&range.end),
-                                new_end_position: position_to_point(&new_end_position),
-                            };
-                            document.write().unwrap().tree.edit(&input_edit);
-                        }
                         document
                             .write()
                             .unwrap()
-                            .update_and_reparse(text_document.version, text_document.text);
+                            .update(params.content_changes, params.text_document.version.into());
                         eprintln!("{:?}", document.read().unwrap().tree.root_node().to_sexp());
                         continue;
                     }
@@ -246,10 +192,7 @@ fn handle_messages(
                         if documents.contains_key(&params.text_document.uri) {
                             let document = documents.get(&params.text_document.uri).unwrap();
                             let text = document.read().unwrap().text.clone();
-                            eprintln!(
-                                "we think the document looks like:\n{:?}",
-                                text
-                            );
+                            eprintln!("we think the document looks like:\n{:?}", text);
                             eprintln!(
                                 "and has an AST like:\n{:?}",
                                 document.read().unwrap().tree.root_node().to_sexp()
